@@ -1,0 +1,33 @@
+.flip {
+    margin-bottom: 2rem;
+}
+
+.flipHeader {
+    margin-bottom: 1rem;
+}
+
+.flipRow {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.flipRowFlex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flipRowKey {
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.flipRowValue {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    margin-bottom: 2rem;
+}
+
+.flipStatus {
+    cursor: pointer;
+}

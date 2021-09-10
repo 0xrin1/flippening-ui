@@ -1,0 +1,26 @@
+.guessForm {
+    display: flex;
+    flex-direction: row;
+    background-color: black;
+    color: white;
+}
+
+.guessInput {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    background-color: black;
+    color: white;
+    width: 20rem;
+}
+
+.guessSubmit {
+    margin-bottom: 1rem;
+    background-color: black;
+    color: white;
+    font-family: 'Inconsolata', monospace;
+}
+
+// Upward margin specified because pop-out.
+.provideSecret {
+    margin-top: 2rem;
+}

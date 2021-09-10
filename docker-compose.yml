@@ -1,0 +1,21 @@
+version: '3'
+
+x-variables: &x-variables
+  APP_ENV: dev
+
+services:
+  ui:
+    image: flipping
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment: *x-variables
+    ports:
+     - "3000:3000"
+    volumes:
+      - ./components:/app/components
+      - ./context:/app/context
+      - ./interfaces:/app/interfaces
+      - ./lib:/app/lib
+      - ./pages:/app/pages
+      - ./styles:/app/styles

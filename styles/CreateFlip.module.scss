@@ -1,0 +1,32 @@
+.flipForm {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.flipFormRow {
+    display: flex;
+    flex-direction: column;
+}
+
+.flipInput {
+    margin-bottom: 1rem;
+    background-color: black;
+    color: white;
+    width: 20rem;
+    font-family: 'Inconsolata', monospace;
+}
+
+.flipInputLarge {
+    margin-bottom: 1rem;
+    background-color: black;
+    color: white;
+    width: 34rem;
+    font-family: 'Inconsolata', monospace;
+}
+
+.flipSubmit {
+    margin-bottom: 1rem;
+    background-color: black;
+    color: white;
+    font-family: 'Inconsolata', monospace;
+}
