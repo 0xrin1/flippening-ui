@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Layout from '../components/Layout';
 import Header from '../components/Header';
 import FlipForm from '../components/FlipForm';
+import Flips from '../components/Flips';
 import AccountsProvider, { AccountsContext } from '../context/AccountContext';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -29,6 +30,11 @@ const HomePage = () => {
                         </Col>
                         <Col md="6">
                             <FlipForm></FlipForm>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md="12">
+                            <Flips></Flips>
                         </Col>
                     </Row>
                 </Container>

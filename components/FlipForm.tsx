@@ -14,7 +14,8 @@ import tokenABI from '../lib/tokenABI';
 export default function FlipForm() {
     let [network, setNetwork] = useState('bsc');
     let [range, setRange] = useState(10);
-    let [token, setToken] = useState('0xae13d989dac2f0debff460ac112a837c89baa7cd');
+    // let [token, setToken] = useState('0xae13d989dac2f0debff460ac112a837c89baa7cd');
+    let [token, setToken] = useState('0x1429859428c0abc9c2c47c8ee9fbaf82cfa0f20f');
     let [approved, setApproved] = useState(false);
 
     const onChangeRange = (event: React.FormEvent<HTMLInputElement>): void => {
