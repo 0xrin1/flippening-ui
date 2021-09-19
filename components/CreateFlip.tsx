@@ -41,7 +41,7 @@ export default function CreateFlip() {
         e.preventDefault();
 
         if (!approved) {
-            await approve(context.accounts[0].address, amount, );
+            await approve(amount.toString(), context.accounts[0].address);
 
             setApproved(true);
 
