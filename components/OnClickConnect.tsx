@@ -31,21 +31,15 @@ export default function OnClickConnect() {
         if ([] !== accounts && typeof accountsContext !== 'undefined') {
             const newAccounts = await Promise.all(accounts.map(async (address: string) => {
                 const balance = await provider.getBalance(address);
-                // const tokenBalances = await balances(address);
 
                 return {
                     address,
                     balance: utils.formatEther(balance.toString()).toString(),
-                    // tokens: tokenBalances,
                 };
             }));
 
             accountsContext.saveAccounts(newAccounts);
         }
-
-        // const idiotSwap = new web3.eth.Contract(idiotABI, addresses.swap);
-        // const contractFlips = await idiotSwap.methods.getAllFlips().call();
-        // flipsContext.saveFlips(contractFlips);
     };
 
     return (
