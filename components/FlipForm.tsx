@@ -15,7 +15,7 @@ export default function FlipForm() {
     let [network, setNetwork] = useState('bsc');
     let [range, setRange] = useState(10);
     // let [token, setToken] = useState('0xae13d989dac2f0debff460ac112a837c89baa7cd');
-    let [token, setToken] = useState('0x1429859428c0abc9c2c47c8ee9fbaf82cfa0f20f');
+    let [token, setToken] = useState('0x5FbDB2315678afecb367f032d93F642f64180aa3');
     let [approved, setApproved] = useState(false);
 
     const onChangeRange = (event: React.FormEvent<HTMLInputElement>): void => {
@@ -57,9 +57,11 @@ export default function FlipForm() {
 
         const tokenContract = new Contract(token, tokenABI);
 
+        const adjustedRange = range / 100;
+
         if (!approved) {
 
-            await approve(utils.parseEther(range.toString()).toString(), tokenContract);
+            await approve(utils.parseEther(adjustedRange.toString()).toString(), tokenContract);
 
             setApproved(true);
 
@@ -71,7 +73,7 @@ export default function FlipForm() {
 
         console.log(`Make to store your secret so you can redeem the pot if you win: ${secret}`);
 
-        await createFlip(hashedSecret, token, utils.parseEther(range.toString()).toString());
+        await createFlip(hashedSecret, token, utils.parseEther(adjustedRange.toString()).toString());
     }
 
     return <>
@@ -102,14 +104,15 @@ export default function FlipForm() {
                 <p>Flip: {range / 100}</p>
 
                 <AccountsContext.Consumer>
-                    {accountsContext => (
-                        <>
-                            {
-                                !accountsContext.accounts &&
-                                <p>Connect before flipping!</p>
-                            }
-                        </>
-                    )
+                    {
+                        accountsContext => (
+                            <>
+                                {
+                                    !accountsContext.accounts &&
+                                    <p>Connect before flipping!</p>
+                                }
+                            </>
+                        )
                     }
                 </AccountsContext.Consumer>
 

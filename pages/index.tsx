@@ -26,7 +26,7 @@ const HomePage = () => {
     const getCreatedEvents = async () => {
         if (accountsProvider.accounts && !flipsProvider.flips) {
             const eventFilter = signedContract.filters.Created();
-            const events = await signedContract.queryFilter(eventFilter);
+            const events = await signedContract.queryFilter(eventFilter, 0);
             flipsProvider.saveFlips(events);
         }
     };
