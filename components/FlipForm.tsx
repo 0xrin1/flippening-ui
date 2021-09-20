@@ -60,7 +60,6 @@ export default function FlipForm() {
         const adjustedRange = range / 100;
 
         if (!approved) {
-
             await approve(utils.parseEther(adjustedRange.toString()).toString(), tokenContract);
 
             setApproved(true);
