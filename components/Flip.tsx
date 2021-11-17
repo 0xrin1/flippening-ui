@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext } from 'react';
 import { AccountsContext } from '../context/AccountContext';
 import { FlipType } from '../interfaces';
 import symbols from '../lib/symbol';

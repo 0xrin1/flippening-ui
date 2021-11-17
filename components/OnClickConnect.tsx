@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react';
 import { provider, ethEnabled, signer } from '../lib/w3';
 import { utils, Contract } from 'ethers';
 import tokenABI from '../lib/tokenABI';
@@ -22,13 +22,15 @@ const balances = async (address: string) => {
 }
 
 export default function OnClickConnect() {
-    const onClickConnect = async (accountsContext: any, flipsContext: any) => {
-        if (await !ethEnabled()) {
+    let { accounts, saveAccounts } = useContext(AccountsContext);
+
+    const onClickConnect = async (saveAccounts: any) => {
+        if (! (await ethEnabled())) {
             alert('Please install MetaMask to use this dApp!');
         }
 
         const accounts = [await signer.getAddress()];
-        if ([] !== accounts && typeof accountsContext !== 'undefined') {
+        if ([] !== accounts && typeof saveAccounts !== 'undefined') {
             const newAccounts = await Promise.all(accounts.map(async (address: string) => {
                 const balance = await provider.getBalance(address);
 
@@ -38,25 +40,18 @@ export default function OnClickConnect() {
                 };
             }));
 
-            accountsContext.saveAccounts(newAccounts);
+            saveAccounts(newAccounts);
         }
     };
 
+    onClickConnect(saveAccounts);
+
     return (
-        <AccountsContext.Consumer>
-            { accountsContext => (
-                <FlipsContext.Consumer>
-                    { flipsContext => (
-                        <>
-                            {
-                                !accountsContext.accounts
-                                && <Button onClick={() => onClickConnect(accountsContext, flipsContext)} variant="outline-primary">Connect</Button>
-                            }
-                        </>
-                        )
-                    }
-                </FlipsContext.Consumer>
-            )}
-        </AccountsContext.Consumer>
+        <>
+            {
+                !accounts
+                && <Button onClick={() => onClickConnect(saveAccounts)} variant="outline-primary">Connect</Button>
+            }
+        </>
     );
 };
