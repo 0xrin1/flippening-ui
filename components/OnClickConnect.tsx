@@ -46,12 +46,5 @@ export default function OnClickConnect() {
 
     onClickConnect(saveAccounts);
 
-    return (
-        <>
-            {
-                !accounts
-                && <Button onClick={() => onClickConnect(saveAccounts)} variant="outline-primary">Connect</Button>
-            }
-        </>
-    );
+    return <></>;
 };
