@@ -13,12 +13,11 @@ export default function flips() {
                             context.flips && context.flips.map((flip: any) => {
                                 return <>
                                     <ul>
-                                        <li>blockNumber: { flip.blockNumber }</li>
-                                        <li>blockHash: { flip.blockHash }</li>
-                                        <li>address: { flip.address }</li>
                                         <li>amount: { ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString() }</li>
-                                        <li>guesser: { flip.args.guesser }</li>
+                                        <li>creator: { flip.args.creator }</li>
                                         <li>token: { flip.args.token }</li>
+                                        <li>guesser: { flip.args.guesser }</li>
+                                        <li>guess: { flip.args.guess }</li>
                                     </ul>
                                 </>;
                             })
