@@ -9,6 +9,12 @@ export type AccountType = {
     tokens: TokenType[]
 }
 
+export type GuessType = {
+    index: number,
+    guessor: string,
+    guess: string,
+}
+
 export type FlipType = {
     proposer: string,
     challenger: string;

@@ -82,6 +82,12 @@ const flippeningABI: any = [
         {
           "indexed": true,
           "internalType": "string",
+          "name": "filterGuess",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
           "name": "guess",
           "type": "string"
         }

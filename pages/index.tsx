@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,26 +11,11 @@ import Header from '../components/Header';
 import FlipForm from '../components/FlipForm';
 import Flips from '../components/Flips';
 import AccountsProvider, { AccountsContext } from '../context/AccountContext';
-import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
-import { signedContract } from '../lib/w3';
 
 const HomePage = () => {
     const accountsProvider = AccountsProvider();
-    const flipsProvider = FlipsProvider();
 
-    useEffect(() => {
-        getCreatedEvents();
-    });
-
-    const getCreatedEvents = async () => {
-        if (accountsProvider.accounts && !flipsProvider.flips) {
-            const eventFilter = signedContract.filters.Created();
-            const events = await signedContract.queryFilter(eventFilter, 0);
-            flipsProvider.saveFlips(events);
-        }
-    };
-
-    return <>
+     return <>
         <AccountsContext.Provider value={ accountsProvider }>
             <Layout title="Flippening"></Layout>
             <Header></Header>
@@ -49,9 +33,7 @@ const HomePage = () => {
                     </Row>
                     <Row>
                         <Col md="12">
-                            <FlipsContext.Provider value={ flipsProvider }>
-                                <Flips></Flips>
-                            </FlipsContext.Provider>
+                            <Flips></Flips>
                         </Col>
                     </Row>
                 </Container>
