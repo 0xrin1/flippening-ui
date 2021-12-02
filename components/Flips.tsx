@@ -31,47 +31,44 @@ export default function flips() {
 
     return (
         <>
-            <FlipsContext.Provider value={ flipsProvider }>
-                <FlipsContext.Consumer>
-                    {(context: any) => (
-                        <div>
-                            <h2>Flips</h2>
-                            <button onClick={ getCreatedEvents }>Get Flips</button>
-                            <p>
-                                {
-                                    context.flips && context.flips.map((flip: any) => {
-                                        return <ul>
-                                            <li>amount: { ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString() }</li>
-                                            <li>creator: { flip.args.creator }</li>
-                                            <li>token: { flip.args.token }</li>
-                                            <li>guesser: { flip.args.guesser }</li>
-                                            <li>guess: { flip.args.guess }</li>
-                                        </ul>;
-                                    })
-                                }
-                            </p>
-                        </div>
-                    )}
-                </FlipsContext.Consumer>
-            </FlipsContext.Provider>
             <GuessContext.Provider value={ guessProvider }>
                 <GuessContext.Consumer>
-                    {(context: any) => (
-                        <div>
-                            <h2>Guesses</h2>
-                            <button onClick={ getGuessedEvents }>Get Guesses</button>
-                            <p>
-                                {
-                                    context.guesses && context.guesses.map((guess: any) => {
-                                        return <ul>
-                                            <li>index: { BigNumber.from(guess.args.index).toString() }</li>
-                                            <li>guess: { guess.args.guess }</li>
-                                            <li>guesser: { guess.args.guesser }</li>
-                                        </ul>
-                                    })
-                                }
-                            </p>
-                        </div>
+                    {(guessContext: any) => (
+                        <FlipsContext.Provider value={ flipsProvider }>
+                            <FlipsContext.Consumer>
+                                {(context: any) => (
+                                    <div>
+                                        <h2>Flips</h2>
+                                        <button onClick={ getCreatedEvents }>Get Flips</button>
+                                        <button onClick={ getGuessedEvents }>Get Guesses</button>
+                                        <p>
+                                            {
+                                                context.flips && context.flips.map((flip: any) => {
+                                                    const flipIndex = BigNumber.from(flip.args.index).toNumber();
+
+                                                    let matchedGuess: any;
+                                                    if (guessContext.guesses) {
+                                                        guessContext.guesses.forEach((guess: any) => {
+                                                            if (BigNumber.from(guess.args.index).toNumber() === flipIndex) {
+                                                                matchedGuess = guess;
+                                                            }
+                                                        });
+                                                    }
+
+                                                    return <ul>
+                                                        <li>amount: { ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString() }</li>
+                                                        <li>creator: { flip.args.creator }</li>
+                                                        <li>token: { flip.args.token }</li>
+                                                        <li>guesser: { matchedGuess?.args.guesser }</li>
+                                                        <li>guess: { matchedGuess?.args.guess }</li>
+                                                    </ul>;
+                                                })
+                                            }
+                                        </p>
+                                    </div>
+                                )}
+                            </FlipsContext.Consumer>
+                        </FlipsContext.Provider>
                     )}
                 </GuessContext.Consumer>
             </GuessContext.Provider>
