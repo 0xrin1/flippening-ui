@@ -39,8 +39,7 @@ export default function flips() {
                                 {(context: any) => (
                                     <div>
                                         <h2>Flips</h2>
-                                        <button onClick={ getCreatedEvents }>Get Flips</button>
-                                        <button onClick={ getGuessedEvents }>Get Guesses</button>
+                                        <button onClick={ getEvents }>Get Flips</button>
                                         <p>
                                             {
                                                 context.flips && context.flips.map((flip: any) => {
