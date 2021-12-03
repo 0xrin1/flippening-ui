@@ -64,6 +64,7 @@ const flips = memo(() => {
                                                     }
 
                                                     let owned = false;
+                                                    let secretValue = '';
                                                     const secrets = localStorage.getItem('secrets');
                                                     if (secrets) {
                                                         const secrets = JSON.parse(localStorage.getItem('secrets'));
@@ -71,6 +72,7 @@ const flips = memo(() => {
                                                         secrets.forEach(secret => {
                                                             if (secret.hash === flip.transactionHash) {
                                                                 owned = true;
+                                                                secretValue = secret.value;
                                                             }
                                                         });
                                                     }
@@ -81,7 +83,7 @@ const flips = memo(() => {
                                                         <li>token: { flip.args.token }</li>
                                                         <li>guesser: { matchedGuess?.args.guesser }</li>
                                                         <li>guess: { matchedGuess?.args.guess }</li>
-                                                        { owned ? <div>owned</div> : <></> }
+                                                        { owned && matchedGuess ? <div>win? { JSON.stringify(Boolean(secretValue === matchedGuess?.args.guess)) }</div> : <></> }
                                                     </ul>;
                                                 })
                                             }
