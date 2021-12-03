@@ -2,11 +2,9 @@ import React, { useEffect, memo } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
 import GuessProvider, { GuessContext } from '../context/GuessContext';
-import AccountsProvider from '../context/AccountContext';
 import { signedContract } from '../lib/w3';
 
 const flips = memo(() => {
-    const accountsProvider = AccountsProvider();
     const flipsProvider = FlipsProvider();
     const guessProvider = GuessProvider();
 
@@ -16,14 +14,12 @@ const flips = memo(() => {
     };
 
     const getCreatedEvents = async () => {
-        console.log('getCreatedEvents', accountsProvider.accounts);
         const eventFilter = signedContract.filters.Created();
         const events = await signedContract.queryFilter(eventFilter, 0);
         flipsProvider.saveFlips(events);
     };
 
     const getGuessedEvents = async () => {
-        console.log('getGuessedEvents', accountsProvider.accounts);
         const eventFilter = signedContract.filters.Guess();
         const events = await signedContract.queryFilter(eventFilter, 0);
         guessProvider.saveGuesses(events);
