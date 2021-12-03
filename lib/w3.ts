@@ -47,8 +47,6 @@ export const approve = async (
     erc20Contract: any,
 ) => {
     try {
-        console.log('wei', wei);
-
         const erc20 = erc20Contract.connect(signer);
 
         const response = await erc20.approve(addresses.flippening.bsc.testnet, wei);

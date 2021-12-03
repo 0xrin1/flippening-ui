@@ -55,6 +55,46 @@ const flips = memo(() => {
         await signedContract.settle(index, clearSecretString);
     };
 
+    const getMatchedSecret = (flip: any): any => {
+        const secrets = localStorage.getItem('secrets');
+
+        let matchedSecret: any;
+        if (secrets) {
+            JSON.parse(secrets).forEach((secret: any) => {
+                if (secret.hash === flip.transactionHash) {
+                    matchedSecret = secret;
+                }
+            });
+        }
+
+        return matchedSecret;
+    }
+
+    const winDisplay = (settleContext: any, matchedSecret: any, matchedGuess: any) => {
+        let win = <></>;
+        if (matchedSecret && matchedGuess) {
+            win = <li>win: no</li>;
+
+            if (JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
+                const collectClick = () => {
+                    collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
+                };
+
+                win = <li>win: <button onClick={ collectClick }>collect</button></li>;
+            }
+        }
+
+        if (matchedGuess && settleContext.settles) {
+            settleContext.settles.forEach((settle: any) => {
+                if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
+                    win = <li>win: yes, and settled</li>;
+                }
+            });
+        }
+
+        return win;
+    }
+
     return (
         <>
             <SettleContext.Provider value={ settleProvider }>
@@ -82,36 +122,8 @@ const flips = memo(() => {
                                             });
                                         }
 
-                                        const secrets = localStorage.getItem('secrets');
-                                        let matchedSecret: any;
-                                        if (secrets) {
-                                            JSON.parse(secrets).forEach((secret: any) => {
-                                                if (secret.hash === flip.transactionHash) {
-                                                    matchedSecret = secret;
-                                                }
-                                            });
-                                        }
-
-                                        let win = <></>;
-                                        if (matchedSecret && matchedGuess) {
-                                            win = <li>win: no</li>;
-
-                                            if (JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
-                                                const collectClick = () => {
-                                                    collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
-                                                };
-
-                                                win = <li>win: <button onClick={ collectClick }>collect</button></li>;
-                                            }
-                                        }
-
-                                        if (matchedGuess && settleContext.settles) {
-                                            settleContext.settles.forEach((settle: any) => {
-                                                if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
-                                                    win = <li>win: yes, and settled</li>;
-                                                }
-                                            });
-                                        }
+                                        const matchedSecret = getMatchedSecret(flip);
+                                        const win = winDisplay(settleContext, matchedSecret, matchedGuess);
 
                                         return <ul>
                                             <li>amount: { ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString() }</li>
