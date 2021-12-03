@@ -34,7 +34,8 @@ export default function FlipForm() {
 
     const createFlip = async (
         secret: Buffer,
-        secretString: string,
+        clearSecret: string,
+        clearValue: boolean,
         token: string,
         amount: string,
     ) => {
@@ -52,7 +53,8 @@ export default function FlipForm() {
             let secrets = localStorage.getItem('secrets');
 
             const secretObject = {
-                secret: secretString,
+                secret: clearSecret,
+                secretValue: clearValue,
                 hash: response.hash,
             };
 
@@ -86,11 +88,13 @@ export default function FlipForm() {
         }
 
         const secret = getRandomString(Math.random() * 12);
-        const hashedSecret = await sha256(`${secret} true`);
+        const secretValue = true;
+        const clearSecret = `${secret} ${secretValue}`;
+        const hashedSecret = await sha256(clearSecret);
 
         console.log(`Make to store your secret so you can redeem the pot if you win: ${secret}`);
 
-        await createFlip(hashedSecret, secret, token, utils.parseEther(adjustedRange.toString()).toString());
+        await createFlip(hashedSecret, clearSecret, secretValue, token, utils.parseEther(adjustedRange.toString()).toString());
     }
 
     return <>

@@ -72,7 +72,7 @@ const flips = memo(() => {
                                                         secrets.forEach(secret => {
                                                             if (secret.hash === flip.transactionHash) {
                                                                 owned = true;
-                                                                secretValue = secret.value;
+                                                                secretValue = secret.secretValue;
                                                             }
                                                         });
                                                     }
@@ -83,7 +83,8 @@ const flips = memo(() => {
                                                         <li>token: { flip.args.token }</li>
                                                         <li>guesser: { matchedGuess?.args.guesser }</li>
                                                         <li>guess: { matchedGuess?.args.guess }</li>
-                                                        { owned && matchedGuess ? <div>win? { JSON.stringify(Boolean(secretValue === matchedGuess?.args.guess)) }</div> : <></> }
+                                                        <li>secretValue: { secretValue && JSON.stringify(secretValue) }</li>
+                                                        { owned && matchedGuess ? <li>win: { JSON.stringify(JSON.stringify(secretValue) !== matchedGuess?.args.guess) }</li> : <></> }
                                                     </ul>;
                                                 })
                                             }
