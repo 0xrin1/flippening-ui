@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { ethers, BigNumber } from 'ethers';
 import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
 import GuessProvider, { GuessContext } from '../context/GuessContext';
@@ -29,17 +29,19 @@ export default function flips() {
         guessProvider.saveGuesses(events);
     };
 
-    if (signedContract) {
-        signedContract.on('Guess', () => {
-            console.log('Guessed event');
-            // getGuessedEvents();
-        });
+    useEffect(() => {
+        getEvents();
 
-        signedContract.on('Created', () => {
-            console.log('Created event');
-            // getCreatedEvents();
-        });
-    }
+        if (signedContract && signedContract.listenerCount() === 0) {
+            signedContract.on('Guess', () => {
+                getGuessedEvents();
+            });
+
+            signedContract.on('Created', () => {
+                getCreatedEvents();
+            });
+        }
+    }, []);
 
     return (
         <>
@@ -51,7 +53,6 @@ export default function flips() {
                                 {(context: any) => (
                                     <div>
                                         <h2>Flips</h2>
-                                        <button onClick={ getEvents }>Get Flips</button>
                                         <p>
                                             {
                                                 context.flips && context.flips.map((flip: any) => {
