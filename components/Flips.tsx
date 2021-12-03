@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, memo } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
 import GuessProvider, { GuessContext } from '../context/GuessContext';
 import AccountsProvider from '../context/AccountContext';
 import { signedContract } from '../lib/w3';
 
-export default function flips() {
+const flips = memo(() => {
     const accountsProvider = AccountsProvider();
     const flipsProvider = FlipsProvider();
     const guessProvider = GuessProvider();
@@ -86,4 +86,6 @@ export default function flips() {
             </GuessContext.Provider>
         </>
     );
-};
+});
+
+export default flips;
