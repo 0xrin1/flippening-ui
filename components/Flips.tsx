@@ -39,6 +39,10 @@ const flips = memo(() => {
         }
     }, []);
 
+    const collect = async () => {
+
+    };
+
     return (
         <>
             <GuessContext.Provider value={ guessProvider }>
@@ -77,6 +81,13 @@ const flips = memo(() => {
                                                         });
                                                     }
 
+                                                    let win = <></>;
+                                                    if (owned && matchedGuess && JSON.stringify(secretValue) !== matchedGuess?.args.guess) {
+                                                        win = <li>win: <button onClick={ collect }>collect</button></li>;
+                                                    } else if (owned && matchedGuess && JSON.stringify(secretValue) === matchedGuess?.args.guess) {
+                                                        win = <li>win: no</li>
+                                                    }
+
                                                     return <ul>
                                                         <li>amount: { ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString() }</li>
                                                         <li>creator: { flip.args.creator }</li>
@@ -84,7 +95,7 @@ const flips = memo(() => {
                                                         <li>guesser: { matchedGuess?.args.guesser }</li>
                                                         <li>guess: { matchedGuess?.args.guess }</li>
                                                         <li>secretValue: { secretValue && JSON.stringify(secretValue) }</li>
-                                                        { owned && matchedGuess ? <li>win: { JSON.stringify(JSON.stringify(secretValue) !== matchedGuess?.args.guess) }</li> : <></> }
+                                                        { win }
                                                     </ul>;
                                                 })
                                             }
