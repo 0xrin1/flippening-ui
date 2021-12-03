@@ -34,6 +34,7 @@ export default function FlipForm() {
 
     const createFlip = async (
         secret: Buffer,
+        secretString: string,
         token: string,
         amount: string,
     ) => {
@@ -47,6 +48,21 @@ export default function FlipForm() {
                 token,
                 amount,
             );
+
+            let secrets = localStorage.getItem('secrets');
+
+            const secretObject = {
+                secret: secretString,
+                hash: response.hash,
+            };
+
+            if (!secrets) {
+                secrets = JSON.stringify([secretObject]);
+            } else {
+                secrets = JSON.stringify([...JSON.parse(secrets), secretObject]);
+            }
+
+            localStorage.setItem('secrets', secrets);
 
             console.log('sendQuery response', response);
         } catch (e) {
@@ -74,7 +90,7 @@ export default function FlipForm() {
 
         console.log(`Make to store your secret so you can redeem the pot if you win: ${secret}`);
 
-        await createFlip(hashedSecret, token, utils.parseEther(adjustedRange.toString()).toString());
+        await createFlip(hashedSecret, secret, token, utils.parseEther(adjustedRange.toString()).toString());
     }
 
     return <>

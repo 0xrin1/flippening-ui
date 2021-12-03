@@ -63,12 +63,25 @@ const flips = memo(() => {
                                                         });
                                                     }
 
+                                                    let owned = false;
+                                                    const secrets = localStorage.getItem('secrets');
+                                                    if (secrets) {
+                                                        const secrets = JSON.parse(localStorage.getItem('secrets'));
+
+                                                        secrets.forEach(secret => {
+                                                            if (secret.hash === flip.transactionHash) {
+                                                                owned = true;
+                                                            }
+                                                        });
+                                                    }
+
                                                     return <ul>
                                                         <li>amount: { ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString() }</li>
                                                         <li>creator: { flip.args.creator }</li>
                                                         <li>token: { flip.args.token }</li>
                                                         <li>guesser: { matchedGuess?.args.guesser }</li>
                                                         <li>guess: { matchedGuess?.args.guess }</li>
+                                                        { owned ? <div>owned</div> : <></> }
                                                     </ul>;
                                                 })
                                             }
