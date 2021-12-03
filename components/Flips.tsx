@@ -1,8 +1,8 @@
 import React from 'react';
-import { ethers, BigNumber, utils } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
 import GuessProvider, { GuessContext } from '../context/GuessContext';
-import AccountsProvider, { AccountsContext } from '../context/AccountContext';
+import AccountsProvider from '../context/AccountContext';
 import { signedContract } from '../lib/w3';
 
 export default function flips() {
@@ -24,10 +24,22 @@ export default function flips() {
 
     const getGuessedEvents = async () => {
         console.log('getGuessedEvents', accountsProvider.accounts);
-        const eventFilter = signedContract.filters.Guessed();
+        const eventFilter = signedContract.filters.Guess();
         const events = await signedContract.queryFilter(eventFilter, 0);
         guessProvider.saveGuesses(events);
     };
+
+    if (signedContract) {
+        signedContract.on('Guess', () => {
+            console.log('Guessed event');
+            // getGuessedEvents();
+        });
+
+        signedContract.on('Created', () => {
+            console.log('Created event');
+            // getCreatedEvents();
+        });
+    }
 
     return (
         <>

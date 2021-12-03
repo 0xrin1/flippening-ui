@@ -92,7 +92,7 @@ const flippeningABI: any = [
           "type": "string"
         }
       ],
-      "name": "Guessed",
+      "name": "Guess",
       "type": "event"
     },
     {
