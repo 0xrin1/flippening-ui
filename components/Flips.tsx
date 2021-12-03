@@ -67,30 +67,27 @@ const flips = memo(() => {
                                                         });
                                                     }
 
-                                                    let owned = false;
-                                                    let secretValue = '';
-                                                    let secretString = '';
                                                     const secrets = localStorage.getItem('secrets');
+                                                    let matchedSecret: any;
                                                     if (secrets) {
                                                         JSON.parse(secrets).forEach((secret: any) => {
                                                             if (secret.hash === flip.transactionHash) {
-                                                                owned = true;
-                                                                secretValue = secret.secretValue;
-                                                                secretString = secret.secret;
+                                                                matchedSecret = secret;
                                                             }
                                                         });
                                                     }
 
                                                     let win = <></>;
-                                                    if (owned && matchedGuess && JSON.stringify(secretValue) !== matchedGuess?.args.guess) {
-                                                        const collectClick = () => {
-                                                            console.log('collectClick', BigNumber.from(matchedGuess.args.index).toNumber());
-                                                            collect(BigNumber.from(matchedGuess.args.index).toNumber(), secretString);
-                                                        };
+                                                    if (matchedSecret && matchedGuess) {
+                                                        win = <li>win: no</li>;
 
-                                                        win = <li>win: <button onClick={ collectClick }>collect</button></li>;
-                                                    } else if (owned && matchedGuess && JSON.stringify(secretValue) === matchedGuess?.args.guess) {
-                                                        win = <li>win: no</li>
+                                                        if (JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
+                                                            const collectClick = () => {
+                                                                collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
+                                                            };
+
+                                                            win = <li>win: <button onClick={ collectClick }>collect</button></li>;
+                                                        }
                                                     }
 
                                                     return <ul>
@@ -99,7 +96,7 @@ const flips = memo(() => {
                                                         <li>token: { flip.args.token }</li>
                                                         <li>guesser: { matchedGuess?.args.guesser }</li>
                                                         <li>guess: { matchedGuess?.args.guess }</li>
-                                                        <li>secretValue: { secretValue && JSON.stringify(secretValue) }</li>
+                                                        <li>secretValue: { matchedSecret?.secretValue && JSON.stringify(matchedSecret.secretValue) }</li>
                                                         { win }
                                                     </ul>;
                                                 })
