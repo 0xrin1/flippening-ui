@@ -15,6 +15,12 @@ export type GuessType = {
     guess: string,
 }
 
+export type SettleType = {
+    index: number,
+    settler: string,
+    creatorWon: boolean,
+}
+
 export type FlipType = {
     proposer: string,
     challenger: string;
