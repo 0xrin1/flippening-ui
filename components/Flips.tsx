@@ -39,8 +39,8 @@ const flips = memo(() => {
         }
     }, []);
 
-    const collect = async () => {
-
+    const collect = async (index: number, clearSecretString: string) => {
+        await signedContract.settle(index, clearSecretString);
     };
 
     return (
@@ -69,21 +69,26 @@ const flips = memo(() => {
 
                                                     let owned = false;
                                                     let secretValue = '';
+                                                    let secretString = '';
                                                     const secrets = localStorage.getItem('secrets');
                                                     if (secrets) {
-                                                        const secrets = JSON.parse(localStorage.getItem('secrets'));
-
-                                                        secrets.forEach(secret => {
+                                                        JSON.parse(secrets).forEach((secret: any) => {
                                                             if (secret.hash === flip.transactionHash) {
                                                                 owned = true;
                                                                 secretValue = secret.secretValue;
+                                                                secretString = secret.secret;
                                                             }
                                                         });
                                                     }
 
                                                     let win = <></>;
                                                     if (owned && matchedGuess && JSON.stringify(secretValue) !== matchedGuess?.args.guess) {
-                                                        win = <li>win: <button onClick={ collect }>collect</button></li>;
+                                                        const collectClick = () => {
+                                                            console.log('collectClick', BigNumber.from(matchedGuess.args.index).toNumber());
+                                                            collect(BigNumber.from(matchedGuess.args.index).toNumber(), secretString);
+                                                        };
+
+                                                        win = <li>win: <button onClick={ collectClick }>collect</button></li>;
                                                     } else if (owned && matchedGuess && JSON.stringify(secretValue) === matchedGuess?.args.guess) {
                                                         win = <li>win: no</li>
                                                     }
