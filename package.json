@@ -8,6 +8,10 @@
     "type-check": "tsc"
   },
   "dependencies": {
+    "@emotion/react": "^11.7.0",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.0",
+    "@mui/material": "^5.2.2",
     "@types/luxon": "^1.27.0",
     "bootstrap": "^5.0.2",
     "crypto": "^1.0.1",

@@ -4,6 +4,11 @@ import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
 import GuessProvider, { GuessContext } from '../context/GuessContext';
 import SettleProvider, { SettleContext } from '../context/SettleContext';
 import { signedContract } from '../lib/w3';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const flips = memo(() => {
     const flipsProvider = FlipsProvider();
@@ -108,7 +113,7 @@ const flips = memo(() => {
                     {(context: any) => (
                         <div>
                             <h2>Flips</h2>
-                            <p>
+                            <>
                                 {
                                     context.flips && context.flips.map((flip: any) => {
                                         const flipIndex = BigNumber.from(flip.args.index).toNumber();
@@ -124,19 +129,50 @@ const flips = memo(() => {
 
                                         const matchedSecret = getMatchedSecret(flip);
                                         const win = winDisplay(settleContext, matchedSecret, matchedGuess);
+                                        const amount = ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
 
-                                        return <ul>
-                                            <li>amount: { ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString() }</li>
-                                            <li>creator: { flip.args.creator }</li>
-                                            <li>token: { flip.args.token }</li>
-                                            { matchedGuess?.args.guesser && <li>guesser: { matchedGuess?.args.guesser }</li> }
-                                            { matchedGuess?.args.guess && <li>guess: { matchedGuess?.args.guess }</li> }
-                                            { matchedSecret?.secretValue && <li>secretValue: { JSON.stringify(matchedSecret.secretValue) }</li> }
-                                            { win }
-                                        </ul>;
+                                        return <Accordion>
+                                            <AccordionSummary
+                                                expandIcon={<ExpandMoreIcon />}
+                                                aria-controls="panel1a-content"
+                                                id="panel1a-header"
+                                            >
+                                                <Typography>{ amount } { flip.args.token }</Typography>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <Typography>
+                                                    <ul>
+                                                        <li>
+                                                            creator
+                                                            <ul>
+                                                                <li>{ flip.args.creator }</li>
+                                                            </ul>
+                                                        </li>
+                                                        { matchedGuess?.args.guesser && <li>
+                                                            guesser
+                                                            <ul>
+                                                                <li>{ matchedGuess?.args.guesser }</li>
+                                                            </ul>
+                                                        </li> }
+                                                        { matchedGuess?.args.guess && <li>
+                                                            guess
+                                                            <ul>
+                                                                <li>{ matchedGuess?.args.guess }</li>
+                                                            </ul>
+                                                        </li> }
+                                                        { matchedSecret?.secretValue && <li>
+                                                            secret
+                                                            <ul>
+                                                                <li>{ JSON.stringify(matchedSecret.secretValue) }</li>
+                                                            </ul>
+                                                        </li> }
+                                                    </ul>
+                                                </Typography>
+                                            </AccordionDetails>
+                                        </Accordion>;
                                     })
                                 }
-                            </p>
+                            </>
                         </div>
                     )}
                 </FlipsContext.Consumer>

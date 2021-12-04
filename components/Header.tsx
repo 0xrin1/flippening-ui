@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Head from 'next/head';
 import Badge from 'react-bootstrap/Badge'
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
@@ -11,6 +12,10 @@ type Props = {};
 const Header = ({}: Props) => {
     return (
         <>
+            <Head>
+                <title>Flippening</title>
+                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+            </Head>
             <AccountsContext.Consumer>
                 {(context: any) => (
                     <Navbar bg="light" expand="lg">
