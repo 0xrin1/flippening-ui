@@ -78,21 +78,35 @@ const flips = memo(() => {
     const winDisplay = (settleContext: any, matchedSecret: any, matchedGuess: any) => {
         let win = <></>;
         if (matchedSecret && matchedGuess) {
-            win = <li>win: no</li>;
+            win = <li>win
+                <ul>
+                    <li>no</li>
+                </ul>
+            </li>;
 
             if (JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
                 const collectClick = () => {
                     collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
                 };
 
-                win = <li>win: <button onClick={ collectClick }>collect</button></li>;
+                win = <li>
+                    win
+                    <ul>
+                        <li><button onClick={ collectClick }>collect</button></li>
+                    </ul>
+                </li>;
             }
         }
 
         if (matchedGuess && settleContext.settles) {
             settleContext.settles.forEach((settle: any) => {
                 if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
-                    win = <li>win: yes, and settled</li>;
+                    win = <li>
+                        win
+                        <ul>
+                            <li>yes, and settled</li>
+                        </ul>
+                    </li>;
                 }
             });
         }
@@ -166,6 +180,7 @@ const flips = memo(() => {
                                                                 <li>{ JSON.stringify(matchedSecret.secretValue) }</li>
                                                             </ul>
                                                         </li> }
+                                                        { win }
                                                     </ul>
                                                 </Typography>
                                             </AccordionDetails>
