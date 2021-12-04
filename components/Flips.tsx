@@ -9,6 +9,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { instantiateContract, signer } from '../lib/w3';
 
 const flips = memo(() => {
     const flipsProvider = FlipsProvider();
@@ -22,8 +23,30 @@ const flips = memo(() => {
 
     const getCreatedEvents = async () => {
         const eventFilter = signedContract.filters.Created();
-        const events = await signedContract.queryFilter(eventFilter, 0);
-        flipsProvider.saveFlips(events);
+        let events = await signedContract.queryFilter(eventFilter, 0);
+
+        let newEvents = [];
+
+        for (let event of events) {
+            const tokenContract = instantiateContract(event?.args?.token).connect(signer);
+
+            const symbol = await tokenContract.symbol();
+
+            newEvents.push({
+                blockNumber: event.blockNumber,
+                blockHash: event.blockHash,
+                address: event.address,
+                args: {
+                    amount: event?.args?.amount,
+                    creator: event?.args?.creator,
+                    index: event?.args?.index,
+                    token: event?.args?.token,
+                    symbol,
+                },
+            });
+        }
+
+        flipsProvider.saveFlips(newEvents);
     };
 
     const getGuessedEvents = async () => {
@@ -151,7 +174,7 @@ const flips = memo(() => {
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
                                             >
-                                                <Typography>{ amount } { flip.args.token }</Typography>
+                                                <Typography>{ amount } { flip?.args?.symbol }</Typography>
                                             </AccordionSummary>
                                             <AccordionDetails>
                                                 <Typography>
