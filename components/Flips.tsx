@@ -131,7 +131,7 @@ const flips = memo(() => {
                                             <li>token: { flip.args.token }</li>
                                             <li>guesser: { matchedGuess?.args.guesser }</li>
                                             <li>guess: { matchedGuess?.args.guess }</li>
-                                            <li>secretValue: { matchedSecret?.secretValue && JSON.stringify(matchedSecret.secretValue) }</li>
+                                            { matchedSecret?.secretValue && <li>secretValue: { JSON.stringify(matchedSecret.secretValue) }</li> }
                                             { win }
                                         </ul>;
                                     })
