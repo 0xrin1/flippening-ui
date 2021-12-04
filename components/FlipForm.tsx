@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { AccountsContext } from '../context/AccountContext';
+import AccountsProvider, { AccountsContext } from '../context/AccountContext';
 import styles from '../styles/FlipForm.module.scss';
 import { utils, Contract } from 'ethers';
 import { contract, signedContract, approve, signer } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import tokenABI from '../lib/tokenABI';
+import addresses from '../lib/addresses';
 
 export default function FlipForm() {
+    let { accounts, saveAccounts } = useContext(AccountsContext);
+
     let [network, setNetwork] = useState('bsc');
     let [range, setRange] = useState(10);
-    // let [token, setToken] = useState('0xae13d989dac2f0debff460ac112a837c89baa7cd');
-    // let [token, setToken] = useState('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
     let [token, setToken] = useState('0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9');
 
     let [approved, setApproved] = useState(false);
@@ -76,13 +77,21 @@ export default function FlipForm() {
         event.preventDefault();
 
         const tokenContract = new Contract(token, tokenABI);
+        const signedTokenContract = tokenContract.connect(signer);
 
         const adjustedRange = range / 100;
 
         if (!approved) {
-            await approve(utils.parseEther(adjustedRange.toString()).toString(), tokenContract);
+            if (signedContract) {
+                signedTokenContract.on('Approval', async (owner: any, spender: any, amount: any) => {
+                    // Could interfere with other contracts?
+                    if (owner === accounts[0]?.address && spender === addresses.flippening.bsc.testnet) {
+                        setApproved(true);
+                    }
+                });
+            }
 
-            setApproved(true);
+            await approve(utils.parseEther(adjustedRange.toString()).toString(), tokenContract);
 
             return;
         }
@@ -98,47 +107,47 @@ export default function FlipForm() {
     }
 
     return <>
-        <Container>
-            <Form onSubmit={onSubmit}>
-                <FloatingLabel controlId="floatingSelect" label="Select network">
-                    <Form.Select onChange={onChangeNetwork} value={network}>
-                        <option value="bsc">Binance Smart Chain</option>
-                        <option disabled value="eth">Ethereum</option>
-                    </Form.Select>
-                </FloatingLabel>
+        <AccountsContext.Consumer>
+            {
+                accountsContext => (
+                    <Container>
+                        <Form onSubmit={onSubmit}>
+                            <FloatingLabel controlId="floatingSelect" label="Select network">
+                                <Form.Select onChange={onChangeNetwork} value={network}>
+                                    <option value="bsc">Binance Smart Chain</option>
+                                    <option disabled value="eth">Ethereum</option>
+                                </Form.Select>
+                            </FloatingLabel>
 
-                <Form.Group className="mb-3" controlId="token">
-                    <Form.Label>Token address</Form.Label>
-                    <Form.Control value={token} onChange={onChangeToken} type="text" placeholder="Enter token" />
-                    <Form.Text className="text-muted"></Form.Text>
-                </Form.Group>
+                            <Form.Group className="mb-3" controlId="token">
+                                <Form.Label>Token address</Form.Label>
+                                <Form.Control value={token} onChange={onChangeToken} type="text" placeholder="Enter token" />
+                                <Form.Text className="text-muted"></Form.Text>
+                            </Form.Group>
 
-                <ButtonGroup>
-                    <Button onClick={() => setRange(10)} variant="outline-primary">0.1</Button>
-                    <Button onClick={() => setRange(50)} variant="outline-primary">0.5</Button>
-                    <Button onClick={() => setRange(70)} variant="outline-primary">0.7</Button>
-                    <Button onClick={() => setRange(100)} variant="outline-primary">1</Button>
-                </ButtonGroup>
+                            <ButtonGroup>
+                                <Button onClick={() => setRange(10)} variant="outline-primary">0.1</Button>
+                                <Button onClick={() => setRange(50)} variant="outline-primary">0.5</Button>
+                                <Button onClick={() => setRange(70)} variant="outline-primary">0.7</Button>
+                                <Button onClick={() => setRange(100)} variant="outline-primary">1</Button>
+                            </ButtonGroup>
 
-                <Form.Range onChange={onChangeRange} value={range} min="0" max="100" id="flip-range" />
+                            <Form.Range onChange={onChangeRange} value={range} min="0" max="100" id="flip-range" />
 
-                <p>Flip: {range / 100}</p>
+                            <p>Flip: {range / 100}</p>
 
-                <AccountsContext.Consumer>
-                    {
-                        accountsContext => (
                             <>
                                 {
                                     !accountsContext.accounts &&
                                     <p>Connect before flipping!</p>
                                 }
                             </>
-                        )
-                    }
-                </AccountsContext.Consumer>
 
-                <Button className={styles.submitButton} variant="warning" type="submit">FLIP IT!</Button>{' '}
-            </Form>
-        </Container>
+                            <Button className={styles.submitButton} variant="warning" type="submit">{ approved ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                        </Form>
+                    </Container>
+                )
+            }
+        </AccountsContext.Consumer>
     </>;
 };
