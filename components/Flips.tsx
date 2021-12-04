@@ -129,8 +129,8 @@ const flips = memo(() => {
                                             <li>amount: { ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString() }</li>
                                             <li>creator: { flip.args.creator }</li>
                                             <li>token: { flip.args.token }</li>
-                                            <li>guesser: { matchedGuess?.args.guesser }</li>
-                                            <li>guess: { matchedGuess?.args.guess }</li>
+                                            { matchedGuess?.args.guesser && <li>guesser: { matchedGuess?.args.guesser }</li> }
+                                            { matchedGuess?.args.guess && <li>guess: { matchedGuess?.args.guess }</li> }
                                             { matchedSecret?.secretValue && <li>secretValue: { JSON.stringify(matchedSecret.secretValue) }</li> }
                                             { win }
                                         </ul>;
