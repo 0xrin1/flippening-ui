@@ -27,6 +27,7 @@ export default function FlipForm() {
         if (signedContract) {
             signedContract.on('Created', () => {
                 setLoading(false);
+                setApproved(false);
             });
         }
     }, []);
