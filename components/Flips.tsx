@@ -20,6 +20,7 @@ const flips = memo(() => {
     const getEvents = async () => {
         await getCreatedEvents();
         await getGuessedEvents();
+        await getSettledEvents();
     };
 
     const getCreatedEvents = async () => {
