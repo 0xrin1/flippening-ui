@@ -25,7 +25,7 @@ const HomePage = () => {
                         <Col md="6">
                             <h2>How it works?</h2>
 
-                            <p>Select a pool, bet an ammount and flip the coin.<br />If you win you get double back.<br />Easy peasy :)</p>
+                            <p>Select a pool, bet an amount and flip the coin.<br />If you win you get double back.<br />Easy peasy :)</p>
                         </Col>
                         <Col md="6">
                             <FlipForm></FlipForm>
