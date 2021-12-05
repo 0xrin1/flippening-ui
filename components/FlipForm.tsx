@@ -19,6 +19,7 @@ export default function FlipForm() {
     let [range, setRange] = useState(10);
     // let [token, setToken] = useState('0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9');
     let [token, setToken] = useState('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512');
+    let [loading, setLoading] = useState(false);
 
     let [approved, setApproved] = useState(false);
 
@@ -45,6 +46,8 @@ export default function FlipForm() {
             console.log('creating flip', signedContract);
 
             console.log(secret, token, amount);
+
+            setLoading(true);
 
             const response = await signedContract.create(
                 secret,
@@ -77,6 +80,8 @@ export default function FlipForm() {
     const onSubmit = async (event: React.FormEvent<HTMLInputElement>): Promise<void> => {
         event.preventDefault();
 
+        setLoading(true);
+
         const tokenContract = new Contract(token, tokenABI);
         const signedTokenContract = tokenContract.connect(signer);
 
@@ -88,6 +93,8 @@ export default function FlipForm() {
                     // Could interfere with other contracts?
                     if (owner === accounts[0]?.address && spender === addresses.flippening.bsc.testnet) {
                         setApproved(true);
+
+                        setLoading(false);
                     }
                 });
             }
@@ -144,7 +151,7 @@ export default function FlipForm() {
                                 }
                             </>
 
-                            <Button className={styles.submitButton} variant="warning" type="submit">{ approved ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                            <Button className={styles.submitButton} variant="warning" type="submit" disabled={ loading }>{ approved ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
                         </Form>
                     </Container>
                 )

@@ -105,35 +105,30 @@ const flips = memo(() => {
         let win = <></>;
 
         if (matchedSecret && matchedGuess) {
-            win = <li>win
-                <ul>
-                    <li>no</li>
-                </ul>
-            </li>;
+            win = <div>
+                <strong>win</strong>
+                <div>no</div>
+            </div>;
 
             if (JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
                 const collectClick = () => {
                     collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
                 };
 
-                win = <li>
-                    win
-                    <ul>
-                        <li><button onClick={ collectClick }>collect</button></li>
-                    </ul>
-                </li>;
+                win = <div>
+                    <strong>win</strong>
+                    <div><button onClick={ collectClick }>collect</button></div>
+                </div>;
             }
         }
 
         if (matchedGuess && settleContext.settles) {
             settleContext.settles.forEach((settle: any) => {
                 if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
-                    win = <li>
-                        win
-                        <ul>
-                            <li>yes, and settled</li>
-                        </ul>
-                    </li>;
+                    win = <div>
+                        <strong>win</strong>
+                        <div>yes, and settled</div>
+                    </div>;
                 }
             });
         }
@@ -152,7 +147,7 @@ const flips = memo(() => {
             <FlipsContext.Provider value={ flipsProvider }>
                 <FlipsContext.Consumer>
                     {(context: any) => (
-                        <div>
+                        <>
                             <h2>Flips</h2>
                             <>
                                 {
@@ -186,33 +181,25 @@ const flips = memo(() => {
                                             </AccordionSummary>
                                             <AccordionDetails>
                                                 <Typography>
-                                                    <ul>
-                                                        <li>
-                                                            creator
-                                                            <ul>
-                                                                <li>{ flip.args.creator }</li>
-                                                            </ul>
-                                                        </li>
-                                                        { matchedGuess?.args.guesser && <li>
-                                                            guesser
-                                                            <ul>
-                                                                <li>{ matchedGuess?.args.guesser }</li>
-                                                            </ul>
-                                                        </li> }
-                                                        { matchedGuess?.args.guess && <li>
-                                                            guess
-                                                            <ul>
-                                                                <li>{ matchedGuess?.args.guess }</li>
-                                                            </ul>
-                                                        </li> }
-                                                        { matchedSecret?.secretValue && <li>
-                                                            secret
-                                                            <ul>
-                                                                <li>{ JSON.stringify(matchedSecret.secretValue) }</li>
-                                                            </ul>
-                                                        </li> }
+                                                    <div>
+                                                        <div>
+                                                            <strong>creator</strong>
+                                                            <div>{ flip.args.creator }</div>
+                                                        </div>
+                                                        { matchedGuess?.args.guesser && <div>
+                                                            <strong>guesser</strong>
+                                                            <div>{ matchedGuess?.args.guesser }</div>
+                                                        </div> }
+                                                        { matchedGuess?.args.guess && <div>
+                                                            <strong>guess</strong>
+                                                            <div>{ matchedGuess?.args.guess }</div>
+                                                        </div> }
+                                                        { matchedSecret?.secretValue && <div>
+                                                            <strong>secret</strong>
+                                                            <div>{ JSON.stringify(matchedSecret.secretValue) }</div>
+                                                        </div> }
                                                         { win }
-                                                    </ul>
+                                                    </div>
                                                 </Typography>
                                             </AccordionDetails>
                                         </Accordion>;
@@ -220,7 +207,7 @@ const flips = memo(() => {
                                     : <p>There are no flips yet...</p>
                                 }
                             </>
-                        </div>
+                        </>
                     )}
                 </FlipsContext.Consumer>
             </FlipsContext.Provider>
