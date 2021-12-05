@@ -30,6 +30,7 @@ const flips = memo(() => {
         for (let event of events) {
             const tokenContract = instantiateContract(event?.args?.token).connect(signer);
 
+            // Could make efficient by only checking symbol for addresses that symbol is not known for
             const symbol = await tokenContract.symbol();
 
             newEvents.push({
