@@ -10,6 +10,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { instantiateContract, signer } from '../lib/w3';
+import styles from '../styles/Flip.module.scss';
 
 const flips = memo(() => {
     const flipsProvider = FlipsProvider();
@@ -177,7 +178,10 @@ const flips = memo(() => {
                                                 aria-controls="panel1a-content"
                                                 id="panel1a-header"
                                             >
-                                                <Typography>{ amount } { flip?.args?.symbol }</Typography>
+                                                <div className={ styles.accordionHeader }>
+                                                    <Typography>{ amount } { flip?.args?.symbol }</Typography>
+                                                    <Typography>{ matchedSecret ? 'Your flip' : '' }</Typography>
+                                                </div>
                                             </AccordionSummary>
                                             <AccordionDetails>
                                                 <Typography>

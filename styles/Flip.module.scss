@@ -6,6 +6,12 @@
     margin-bottom: 1rem;
 }
 
+.accordionHeader {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .flipRow {
     margin-top: 3rem;
     display: flex;
