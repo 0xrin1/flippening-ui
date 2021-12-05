@@ -152,7 +152,7 @@ const flips = memo(() => {
                             <h2>Flips</h2>
                             <>
                                 {
-                                    (context.flips && context.flips.length > 0) ? context.flips.map((flip: any) => {
+                                    (context.flips && context.flips.length > 0) ? context.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber).map((flip: any) => {
                                         const flipIndex = BigNumber.from(flip.args.index).toNumber();
 
                                         let matchedGuess: any;
