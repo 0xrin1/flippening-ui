@@ -67,7 +67,7 @@ const flips = memo(() => {
     useEffect(() => {
         getEvents();
 
-        if (signedContract && signedContract.listenerCount() === 0) {
+        if (signedContract) {
             signedContract.on('Guess', () => {
                 getGuessedEvents();
             });

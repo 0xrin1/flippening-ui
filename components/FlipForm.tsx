@@ -23,6 +23,14 @@ export default function FlipForm() {
 
     let [approved, setApproved] = useState(false);
 
+    useEffect(() => {
+        if (signedContract) {
+            signedContract.on('Created', () => {
+                setLoading(false);
+            });
+        }
+    }, []);
+
     const onChangeRange = (event: React.FormEvent<HTMLInputElement>): void => {
         setRange(parseInt(event.target.value));
     };
