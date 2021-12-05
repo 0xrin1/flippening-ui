@@ -36,6 +36,7 @@ const flips = memo(() => {
             newEvents.push({
                 blockNumber: event.blockNumber,
                 blockHash: event.blockHash,
+                transactionHash: event.transactionHash,
                 address: event.address,
                 args: {
                     amount: event?.args?.amount,
@@ -101,6 +102,7 @@ const flips = memo(() => {
 
     const winDisplay = (settleContext: any, matchedSecret: any, matchedGuess: any) => {
         let win = <></>;
+
         if (matchedSecret && matchedGuess) {
             win = <li>win
                 <ul>
