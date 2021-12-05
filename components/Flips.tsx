@@ -153,7 +153,7 @@ const flips = memo(() => {
                             <h2>Flips</h2>
                             <>
                                 {
-                                    context.flips && context.flips.map((flip: any) => {
+                                    (context.flips && context.flips.length > 0) ? context.flips.map((flip: any) => {
                                         const flipIndex = BigNumber.from(flip.args.index).toNumber();
 
                                         let matchedGuess: any;
@@ -210,6 +210,7 @@ const flips = memo(() => {
                                             </AccordionDetails>
                                         </Accordion>;
                                     })
+                                    : <p>There are no flips yet...</p>
                                 }
                             </>
                         </div>
