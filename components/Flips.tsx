@@ -183,27 +183,23 @@ const flips = memo(() => {
                                                 </div>
                                             </AccordionSummary>
                                             <AccordionDetails>
-                                                <Typography>
-                                                    <div>
-                                                        <div>
-                                                            <strong>creator</strong>
-                                                            <div>{ flip.args.creator }</div>
-                                                        </div>
-                                                        { matchedGuess?.args.guesser && <div>
-                                                            <strong>guesser</strong>
-                                                            <div>{ matchedGuess?.args.guesser }</div>
-                                                        </div> }
-                                                        { matchedGuess?.args.guess && <div>
-                                                            <strong>guess</strong>
-                                                            <div>{ matchedGuess?.args.guess }</div>
-                                                        </div> }
-                                                        { matchedSecret?.secretValue && <div>
-                                                            <strong>secret</strong>
-                                                            <div>{ JSON.stringify(matchedSecret.secretValue) }</div>
-                                                        </div> }
-                                                        { win }
-                                                    </div>
-                                                </Typography>
+                                                <div>
+                                                    <strong>creator</strong>
+                                                    <div>{ flip.args.creator }</div>
+                                                </div>
+                                                { matchedGuess?.args.guesser && <div>
+                                                    <strong>guesser</strong>
+                                                    <div>{ matchedGuess?.args.guesser }</div>
+                                                </div> }
+                                                { matchedGuess?.args.guess && <div>
+                                                    <strong>guess</strong>
+                                                    <div>{ matchedGuess?.args.guess }</div>
+                                                </div> }
+                                                { matchedSecret?.secretValue && <div>
+                                                    <strong>secret</strong>
+                                                    <div>{ JSON.stringify(matchedSecret.secretValue) }</div>
+                                                </div> }
+                                                { win }
                                             </AccordionDetails>
                                         </Accordion>;
                                     })
