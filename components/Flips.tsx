@@ -30,24 +30,26 @@ const flips = memo(() => {
         let newEvents = [];
 
         for (let event of events) {
-            const tokenContract = instantiateContract(event?.args?.token).connect(signer);
+            if (event.args) {
+                const tokenContract = instantiateContract(event?.args?.token).connect(signer);
 
-            // Could make efficient by only checking symbol for addresses that symbol is not known for
-            const symbol = await tokenContract.symbol();
+                // Could make efficient by only checking symbol for addresses that symbol is not known for
+                const symbol = await tokenContract.symbol();
 
-            newEvents.push({
-                blockNumber: event.blockNumber,
-                blockHash: event.blockHash,
-                transactionHash: event.transactionHash,
-                address: event.address,
-                args: {
-                    amount: event?.args?.amount,
-                    creator: event?.args?.creator,
-                    index: event?.args?.index,
-                    token: event?.args?.token,
-                    symbol,
-                },
-            });
+                newEvents.push({
+                    blockNumber: event.blockNumber,
+                    blockHash: event.blockHash,
+                    transactionHash: event.transactionHash,
+                    address: event.address,
+                    args: {
+                        amount: event?.args?.amount,
+                        creator: event?.args?.creator,
+                        index: event?.args?.index,
+                        token: event?.args?.token,
+                        symbol,
+                    },
+                });
+            }
         }
 
         flipsProvider.saveFlips(newEvents);
@@ -149,7 +151,7 @@ const flips = memo(() => {
                 <FlipsContext.Consumer>
                     {(context: any) => (
                         <>
-                            <h2>Flips</h2>
+                            <h2>Flipss</h2>
                             <>
                                 {
                                     (context.flips && context.flips.length > 0) ? context.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber).map((flip: any) => {
@@ -168,7 +170,7 @@ const flips = memo(() => {
                                         const win = winDisplay(settleContext, matchedSecret, matchedGuess);
                                         const amount = ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
 
-                                        const won: boolean = matchedSecret ? JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess : false;
+                                        const won: boolean = (matchedSecret?.secretValue && matchedGuess) ? JSON.stringify(matchedSecret.secretValue) !== matchedGuess.args.guess : false;
 
                                         return <Accordion key={ flip.blockNumber }>
                                             <AccordionSummary
