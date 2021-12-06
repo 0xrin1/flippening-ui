@@ -170,7 +170,7 @@ const flips = memo(() => {
                                         const win = winDisplay(settleContext, matchedSecret, matchedGuess);
                                         const amount = ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
 
-                                        const won: boolean = (matchedSecret?.secretValue && matchedGuess) ? JSON.stringify(matchedSecret.secretValue) !== matchedGuess.args.guess : false;
+                                        const won: boolean = (matchedSecret?.secretValue && matchedGuess) ? JSON.stringify(matchedSecret.secretValue) !== matchedGuess.args.guess: false;
 
                                         return <Accordion key={ flip.blockNumber }>
                                             <AccordionSummary
@@ -180,7 +180,7 @@ const flips = memo(() => {
                                             >
                                                 <div className={ styles.accordionHeader }>
                                                     <Typography>{ amount } { flip?.args?.symbol }</Typography>
-                                                    <Typography>{ matchedGuess ? (won ? 'won' : 'lost') : '' }</Typography>
+                                                    <Typography>{ matchedSecret ? (won ? 'won' : 'lost') : '' }</Typography>
                                                     <Typography>{ matchedSecret ? 'Your flip' : '' }</Typography>
                                                 </div>
                                             </AccordionSummary>
