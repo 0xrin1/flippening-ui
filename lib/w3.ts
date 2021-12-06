@@ -22,9 +22,12 @@ export let provider: providers.Web3Provider;
 export let signer: Signer;
 
 export const ethEnabled = async () => {
+            // @ts-ignore
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
         try {
+            // @ts-ignore
             window.ethereum.enable();
+            // @ts-ignore
             provider = new providers.Web3Provider(window.ethereum);
 
             signer = provider.getSigner();

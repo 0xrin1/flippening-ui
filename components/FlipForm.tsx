@@ -4,16 +4,16 @@ import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import AccountsProvider, { AccountsContext } from '../context/AccountContext';
+import { AccountsContext } from '../context/AccountContext';
 import styles from '../styles/FlipForm.module.scss';
 import { utils, Contract } from 'ethers';
-import { contract, signedContract, approve, signer } from '../lib/w3';
+import { signedContract, approve, signer } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import tokenABI from '../lib/tokenABI';
 import addresses from '../lib/addresses';
 
 export default function FlipForm() {
-    let { accounts, saveAccounts } = useContext(AccountsContext);
+    let { accounts } = useContext(AccountsContext) || {};
 
     let [network, setNetwork] = useState('bsc');
     let [range, setRange] = useState(10);
@@ -31,15 +31,15 @@ export default function FlipForm() {
         }
     }, []);
 
-    const onChangeRange = (event: React.FormEvent<HTMLInputElement>): void => {
+    const onChangeRange = (event: any): void => {
         setRange(parseInt(event.target.value));
     };
 
-    const onChangeNetwork = (event: React.FormEvent<HTMLInputElement>): void => {
+    const onChangeNetwork = (event: any): void => {
         setNetwork(event.target.value);
     };
 
-    const onChangeToken = (event: React.FormEvent<HTMLInputElement>): void => {
+    const onChangeToken = (event: any): void => {
         setToken(event.target.value);
     };
 
@@ -85,7 +85,7 @@ export default function FlipForm() {
         }
     }
 
-    const onSubmit = async (event: React.FormEvent<HTMLInputElement>): Promise<void> => {
+    const onSubmit = async (event: any): Promise<void> => {
         event.preventDefault();
 
         setLoading(true);
@@ -97,11 +97,11 @@ export default function FlipForm() {
 
         if (!approved) {
             if (signedContract) {
-                signedTokenContract.on('Approval', async (owner: any, spender: any, amount: any) => {
+                // signedTokenContract.on('Approval', async (owner: any, spender: any, amount: any) => {
+                signedTokenContract.on('Approval', async (owner: any, spender: any) => {
                     // Could interfere with other contracts?
                     if (owner === accounts[0]?.address && spender === addresses.flippening.bsc.testnet) {
                         setApproved(true);
-
                         setLoading(false);
                     }
                 });
@@ -127,7 +127,7 @@ export default function FlipForm() {
             {
                 accountsContext => (
                     <Container>
-                        <Form onSubmit={onSubmit}>
+                        <Form onSubmit={ onSubmit }>
                             <FloatingLabel controlId="floatingSelect" label="Select network">
                                 <Form.Select onChange={onChangeNetwork} value={network}>
                                     <option value="bsc">Binance Smart Chain</option>
@@ -154,7 +154,7 @@ export default function FlipForm() {
 
                             <>
                                 {
-                                    !accountsContext.accounts &&
+                                    accountsContext && !accountsContext.accounts &&
                                     <p>Connect before flipping!</p>
                                 }
                             </>

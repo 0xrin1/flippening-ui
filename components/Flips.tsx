@@ -168,9 +168,9 @@ const flips = memo(() => {
                                         const win = winDisplay(settleContext, matchedSecret, matchedGuess);
                                         const amount = ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
 
-                                        const won: boolean = JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess;
+                                        const won: boolean = matchedSecret ? JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess : false;
 
-                                        return <Accordion>
+                                        return <Accordion key={ flip.blockNumber }>
                                             <AccordionSummary
                                                 expandIcon={<ExpandMoreIcon />}
                                                 aria-controls="panel1a-content"

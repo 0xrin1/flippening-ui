@@ -1,7 +1,7 @@
 import Container from 'react-bootstrap/Container';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import styles from '../styles/HomePage.module.scss';
+// import styles from '../styles/HomePage.module.scss';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';

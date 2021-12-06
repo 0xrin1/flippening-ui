@@ -6,7 +6,7 @@ import styles from '../styles/ProvideGuess.module.scss';
 
 export default function ProvideSecret(props: any) {
     let [ approved, setApproved ] = useState(false);
-    let { accounts, saveAccounts } = useContext(AccountsContext);
+    let { accounts } = useContext(AccountsContext) || {};
     let [ radio, setRadio ] = useState(false);
     let [ secret, setSecret ] = useState('');
 
@@ -53,7 +53,7 @@ export default function ProvideSecret(props: any) {
 
     return <>
         <FlipsContext.Consumer>
-            {(context: any) => (
+            {(_context: any) => (
                 <div className={ styles.provideSecret }>
                     <form className={ styles.guessForm } onSubmit={ submitSecret }>
                         <input

@@ -24,7 +24,7 @@ export default function Flip({
     let [ guessing, setGuessing ] = useState(false);
     let [ expanded, setExpanded ] = useState(false);
     let [ providingSecret, setProvidingSecret ] = useState(false);
-    let { accounts, saveAccounts } = useContext(AccountsContext);
+    let { accounts } = useContext(AccountsContext) || {};
 
     const toggleProvidingSecret = () => {
         setProvidingSecret(!providingSecret);

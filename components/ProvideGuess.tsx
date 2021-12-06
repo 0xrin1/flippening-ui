@@ -6,7 +6,7 @@ import styles from '../styles/ProvideGuess.module.scss';
 
 export default function ProvideGuess(props: any) {
     let [ approved, setApproved ] = useState(false);
-    let { accounts, saveAccounts } = useContext(AccountsContext);
+    let { accounts } = useContext(AccountsContext) || {};
     let [ radio, setRadio ] = useState(false);
 
     const onRadioChange = (e: any) => {
@@ -47,7 +47,7 @@ export default function ProvideGuess(props: any) {
 
     return <>
         <FlipsContext.Consumer>
-            {(context: any) => (
+            {(_context: any) => (
                 <div>
                     <form className={ styles.guessForm } onSubmit={ submitGuess }>
                         <div className={ styles.flipForm } onChange={ onRadioChange }>
