@@ -151,7 +151,7 @@ const flips = memo(() => {
                 <FlipsContext.Consumer>
                     {(context: any) => (
                         <>
-                            <h2>Flipss</h2>
+                            <h2>Flips</h2>
                             <>
                                 {
                                     (context.flips && context.flips.length > 0) ? context.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber).map((flip: any) => {

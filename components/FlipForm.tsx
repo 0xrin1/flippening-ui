@@ -7,15 +7,14 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { AccountsContext } from '../context/AccountContext';
 import styles from '../styles/FlipForm.module.scss';
 import { utils, Contract } from 'ethers';
-import { signedContract, approve, signer, defaultTokenAddress } from '../lib/w3';
+import { signedContract, approve, signer, defaultTokenAddress, flippeningAddress } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import tokenABI from '../lib/tokenABI';
-import addresses from '../lib/addresses';
 
 export default function FlipForm() {
     let { accounts } = useContext(AccountsContext) || {};
 
-    let [network, setNetwork] = useState('bsc');
+    let [network, setNetwork] = useState('arb-test');
     let [range, setRange] = useState(10);
     let [token, setToken] = useState(defaultTokenAddress);
     let [loading, setLoading] = useState(false);
@@ -43,6 +42,14 @@ export default function FlipForm() {
         setToken(event.target.value);
     };
 
+    const parseSecrets = (secretObject: any, secrets?: any) => {
+        if (secrets) {
+            return JSON.stringify([...JSON.parse(secrets), secretObject]);
+        }
+
+        return secrets = JSON.stringify([secretObject]);
+    };
+
     const createFlip = async (
         secret: Buffer,
         clearSecret: string,
@@ -53,8 +60,6 @@ export default function FlipForm() {
         try {
             console.log('creating flip', signedContract);
 
-            console.log(secret, token, amount);
-
             setLoading(true);
 
             const response = await signedContract.create(
@@ -62,6 +67,8 @@ export default function FlipForm() {
                 token,
                 amount,
             );
+
+            console.log('create response', response);
 
             let secrets = localStorage.getItem('secrets');
 
@@ -71,15 +78,9 @@ export default function FlipForm() {
                 hash: response.hash,
             };
 
-            if (!secrets) {
-                secrets = JSON.stringify([secretObject]);
-            } else {
-                secrets = JSON.stringify([...JSON.parse(secrets), secretObject]);
-            }
+            secrets = parseSecrets(secretObject, secrets);
 
             localStorage.setItem('secrets', secrets);
-
-            console.log('sendQuery response', response);
         } catch (e) {
             console.log('e', e);
         }
@@ -100,7 +101,7 @@ export default function FlipForm() {
                 // signedTokenContract.on('Approval', async (owner: any, spender: any, amount: any) => {
                 signedTokenContract.on('Approval', async (owner: any, spender: any) => {
                     // Could interfere with other contracts?
-                    if (owner === accounts[0]?.address && spender === addresses.flippening.bsc.testnet) {
+                    if (owner === accounts[0]?.address && spender === flippeningAddress) {
                         setApproved(true);
                         setLoading(false);
                     }
@@ -130,7 +131,7 @@ export default function FlipForm() {
                         <Form onSubmit={ onSubmit }>
                             <FloatingLabel controlId="floatingSelect" label="Select network">
                                 <Form.Select onChange={onChangeNetwork} value={network}>
-                                    <option value="bsc">Binance Smart Chain</option>
+                                    <option value="arb-test">Arbitrum Testnet</option>
                                     <option disabled value="eth">Ethereum</option>
                                 </Form.Select>
                             </FloatingLabel>
