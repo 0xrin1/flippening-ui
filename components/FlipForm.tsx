@@ -60,13 +60,13 @@ export default function FlipForm() {
         try {
             console.log('creating flip', signedContract);
 
-            setLoading(true);
-
             const response = await signedContract.create(
                 secret,
                 token,
                 amount,
             );
+
+            setLoading(true);
 
             console.log('create response', response);
 
