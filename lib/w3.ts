@@ -3,8 +3,17 @@ import tokenABI from './tokenABI';
 import flippeningABI from './flippeningABI';
 import { ethers, Contract, providers, Signer } from 'ethers';
 
+const determineFlippeningAddress = () => {
+    if (process.env.NODE_ENV === 'production') {
+        flippeningAddress = addresses.flippening.arbitrum.testnet;
+    }
+
+    return addresses.flippening.eth.local;
+};
+
 // Flippening contract
-export let contract = new Contract(addresses.flippening.bsc.testnet, flippeningABI);
+export let flippeningAddress = determineFlippeningAddress();
+export let contract = new Contract(flippeningAddress, flippeningABI);
 export let signedContract: Contract;
 
 export const instantiateContract = (address: string) => {
@@ -52,7 +61,7 @@ export const approve = async (
     try {
         const erc20 = erc20Contract.connect(signer);
 
-        const response = await erc20.approve(addresses.flippening.bsc.testnet, wei);
+        const response = await erc20.approve(flippeningAddress, wei);
 
         console.log('approveQuery response', response);
     } catch(e) {
