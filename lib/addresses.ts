@@ -1,8 +1,11 @@
 const addresses: {[key: string]: string|any} = {
     null: '0x0000000000000000000000000000000000000000',
     tokens: [{
-        address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
         symbol: 'ERC',
+        address: {
+            local: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+            testnet: '0xb4B49427d8599d6030e41cDc2ccDb7d28A9A756B',
+        },
     }],
     flippening: {
         eth: {
@@ -13,7 +16,7 @@ const addresses: {[key: string]: string|any} = {
         },
         arb: {
             symbol: 'AETH',
-            testnet: '0x0000000000000000000000000000000000000000',
+            testnet: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
             mainnet: '0x0000000000000000000000000000000000000000',
         },
         bsc: {

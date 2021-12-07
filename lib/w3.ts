@@ -5,11 +5,21 @@ import { ethers, Contract, providers, Signer } from 'ethers';
 
 const determineFlippeningAddress = () => {
     if (process.env.NODE_ENV === 'production') {
-        flippeningAddress = addresses.flippening.arbitrum.testnet;
+        return addresses.flippening.arbitrum.testnet;
     }
 
     return addresses.flippening.eth.local;
 };
+
+const determineDefaultTokenAddress = () => {
+    if (process.env.NODE_ENV === 'production') {
+        return addresses.tokens[0].address.testnet;
+    }
+
+    return addresses.tokens[0].address.local;
+};
+
+export let defaultTokenAddress = determineDefaultTokenAddress();
 
 // Flippening contract
 export let flippeningAddress = determineFlippeningAddress();
@@ -31,7 +41,7 @@ export let provider: providers.Web3Provider;
 export let signer: Signer;
 
 export const ethEnabled = async () => {
-            // @ts-ignore
+    // @ts-ignore
     if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
         try {
             // @ts-ignore

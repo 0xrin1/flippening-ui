@@ -7,7 +7,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { AccountsContext } from '../context/AccountContext';
 import styles from '../styles/FlipForm.module.scss';
 import { utils, Contract } from 'ethers';
-import { signedContract, approve, signer } from '../lib/w3';
+import { signedContract, approve, signer, defaultTokenAddress } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import tokenABI from '../lib/tokenABI';
 import addresses from '../lib/addresses';
@@ -17,7 +17,7 @@ export default function FlipForm() {
 
     let [network, setNetwork] = useState('bsc');
     let [range, setRange] = useState(10);
-    let [token, setToken] = useState(addresses.tokens[0].address);
+    let [token, setToken] = useState(defaultTokenAddress);
     let [loading, setLoading] = useState(false);
 
     let [approved, setApproved] = useState(false);
