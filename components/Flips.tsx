@@ -185,7 +185,7 @@ const flips = memo(() => {
                                             >
                                                 <div className={ styles.accordionHeader }>
                                                     <Typography>{ amount } { flip?.args?.symbol }</Typography>
-                                                    <Typography>{ matchedSecret ? (won === true ? 'won' : (won === false ? 'lost' : '')) : '' }</Typography>
+                                                    <Typography>{ matchedSecret && matchedGuess ? (won ? 'won' : 'lost') : '' }</Typography>
                                                     <Typography>{ matchedSecret ? 'Your flip' : '' }</Typography>
                                                 </div>
                                             </AccordionSummary>
