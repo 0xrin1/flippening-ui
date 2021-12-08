@@ -14,7 +14,7 @@ import tokenABI from '../lib/tokenABI';
 export default function FlipForm() {
     let { accounts } = useContext(AccountsContext) || {};
 
-    let [network, setNetwork] = useState('arb-test');
+    let [network, setNetwork] = useState('bsc-test');
     let [range, setRange] = useState(10);
     let [token, setToken] = useState(defaultTokenAddress);
     let [loading, setLoading] = useState(false);
@@ -131,7 +131,7 @@ export default function FlipForm() {
                         <Form onSubmit={ onSubmit }>
                             <FloatingLabel controlId="floatingSelect" label="Select network">
                                 <Form.Select onChange={onChangeNetwork} value={network}>
-                                    <option value="arb-test">Arbitrum Testnet</option>
+                                    <option value="bsc-test">BSC Testnet</option>
                                     <option disabled value="eth">Ethereum</option>
                                 </Form.Select>
                             </FloatingLabel>
