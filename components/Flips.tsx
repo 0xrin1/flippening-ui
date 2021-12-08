@@ -3,13 +3,12 @@ import { ethers, BigNumber } from 'ethers';
 import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
 import GuessProvider, { GuessContext } from '../context/GuessContext';
 import SettleProvider, { SettleContext } from '../context/SettleContext';
-import { signedContract } from '../lib/w3';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { instantiateContract, signer } from '../lib/w3';
+import { instantiateContract, signer, signedContract, provider } from '../lib/w3';
 import styles from '../styles/Flip.module.scss';
 
 const flips = memo(() => {
@@ -24,8 +23,10 @@ const flips = memo(() => {
     };
 
     const getCreatedEvents = async () => {
+        const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Created();
-        let events = await signedContract.queryFilter(eventFilter, 0);
+        // TODO: Only subtract 5000 when BSC chain because it sucks
+        let events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
         let newEvents = [];
 
@@ -56,14 +57,18 @@ const flips = memo(() => {
     };
 
     const getGuessedEvents = async () => {
+        const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Guess();
-        const events = await signedContract.queryFilter(eventFilter, 0);
+        // TODO: Only subtract 5000 when BSC chain because it sucks
+        const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
         guessProvider.saveGuesses(events);
     };
 
     const getSettledEvents = async () => {
+        const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Settled();
-        const events = await signedContract.queryFilter(eventFilter, 0);
+        // TODO: Only subtract 5000 when BSC chain because it sucks
+        const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
         settleProvider.saveSettles(events);
     };
 

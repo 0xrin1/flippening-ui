@@ -4,6 +4,8 @@ const addresses: {[key: string]: string|any} = {
         symbol: 'ERC',
         address: {
             local: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+            // testnet: '0xb4B49427d8599d6030e41cDc2ccDb7d28A9A756B',
+            // testnet: '0x9B1D77D7DcB94C97a729E97Ba263CA9e26354235',
             testnet: '0xb4B49427d8599d6030e41cDc2ccDb7d28A9A756B',
         },
     }],
@@ -21,7 +23,7 @@ const addresses: {[key: string]: string|any} = {
         },
         bsc: {
             symbol: 'BNB',
-            testnet: '0x0000000000000000000000000000000000000000',
+            testnet: '0x87142Db455cbC047cEc0a9fD9fD8400b4Ee803Ce',
             mainnet: '0x0000000000000000000000000000000000000000',
         },
         poly: {
