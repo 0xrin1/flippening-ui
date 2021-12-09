@@ -23,7 +23,7 @@ const addresses: {[key: string]: string|any} = {
         },
         bsc: {
             symbol: 'BNB',
-            testnet: '0x87142Db455cbC047cEc0a9fD9fD8400b4Ee803Ce',
+            testnet: '0xa610A2D54cF77FFf7Eb721A49310C545992AC87c',
             mainnet: '0x0000000000000000000000000000000000000000',
         },
         poly: {
