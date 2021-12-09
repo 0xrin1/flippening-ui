@@ -1,20 +1,31 @@
-import React, { useEffect, memo } from 'react';
-import { ethers, BigNumber } from 'ethers';
+import React, { useEffect, useState, useContext, memo } from 'react';
+import { ethers, BigNumber, Contract } from 'ethers';
 import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
 import GuessProvider, { GuessContext } from '../context/GuessContext';
 import SettleProvider, { SettleContext } from '../context/SettleContext';
+import { AccountsContext } from '../context/AccountContext';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { instantiateContract, signer, signedContract, provider } from '../lib/w3';
+import tokenABI from '../lib/tokenABI';
 import styles from '../styles/Flip.module.scss';
+import {
+    instantiateContract,
+    signer,
+    signedContract,
+    provider,
+    approve,
+    flippeningAddress
+} from '../lib/w3';
 
 const flips = memo(() => {
     const flipsProvider = FlipsProvider();
     const guessProvider = GuessProvider();
     const settleProvider = SettleProvider();
+    let { accounts } = useContext(AccountsContext) || {};
+    const [guessApproved, setGuessApproved ] = useState(false);
 
     const getEvents = async () => {
         await getCreatedEvents();
@@ -92,6 +103,26 @@ const flips = memo(() => {
 
     const collect = async (index: number, clearSecretString: string) => {
         await signedContract.settle(index, clearSecretString);
+    };
+
+    const guess = async (flip: any) => {
+        if (guessApproved && signedContract) {
+            console.log('guessing', flip.args.index.toString(), `${Math.random() < 0.5}`);
+            await signedContract.guess(flip.args.index.toString(), `${Math.random() < 0.5}`);
+
+            return;
+        }
+
+        const tokenContract = new Contract(flip.args.token, tokenABI);
+        const signedTokenContract = tokenContract.connect(signer);
+
+        signedTokenContract.on('Approval', async (owner: any, spender: any) => {
+            if (owner === accounts[0]?.address && spender === flippeningAddress) {
+                setGuessApproved(true);
+            }
+        });
+
+        approve(flip.args.amount, signedTokenContract);
     };
 
     const getMatchedGuess = (guessContext: any, flip: any): any => {
@@ -179,8 +210,11 @@ const flips = memo(() => {
                                         const matchedSecret = getMatchedSecret(flip);
                                         const win = winDisplay(settleContext, matchedSecret, matchedGuess);
                                         const amount = ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
-
                                         const won: boolean = (matchedSecret?.secretValue && matchedGuess) ? JSON.stringify(matchedSecret.secretValue) !== matchedGuess.args.guess: false;
+
+                                        const guessClick = () => {
+                                            guess(flip);
+                                        };
 
                                         return <Accordion key={ flip.blockNumber }>
                                             <AccordionSummary
@@ -203,9 +237,12 @@ const flips = memo(() => {
                                                     <strong>guesser</strong>
                                                     <div>{ matchedGuess?.args.guesser }</div>
                                                 </div> }
-                                                { matchedGuess?.args.guess && <div>
+                                                { matchedGuess?.args.guess ? <div>
                                                     <strong>guess</strong>
                                                     <div>{ matchedGuess?.args.guess }</div>
+                                                </div> : <div>
+                                                    <strong>submit guess</strong>
+                                                    <div><button onClick={ guessClick }>{ guessApproved ? 'submit guess' : 'approve to guess' }</button></div>
                                                 </div> }
                                                 { matchedSecret?.secretValue && <div>
                                                     <strong>secret</strong>
