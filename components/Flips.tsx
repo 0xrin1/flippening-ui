@@ -94,6 +94,21 @@ const flips = memo(() => {
         await signedContract.settle(index, clearSecretString);
     };
 
+    const getMatchedGuess = (guessContext: any, flip: any): any => {
+        let matchedGuess: any;
+        const flipIndex = BigNumber.from(flip.args.index).toNumber();
+
+        if (guessContext.guesses) {
+            guessContext.guesses.forEach((guess: any) => {
+                if (BigNumber.from(guess.args.index).toNumber() === flipIndex) {
+                    matchedGuess = guess;
+                }
+            });
+        }
+
+        return matchedGuess;
+    };
+
     const getMatchedSecret = (flip: any): any => {
         const secrets = localStorage.getItem('secrets');
 
@@ -107,7 +122,7 @@ const flips = memo(() => {
         }
 
         return matchedSecret;
-    }
+    };
 
     const winDisplay = (settleContext: any, matchedSecret: any, matchedGuess: any) => {
         let win = <></>;
@@ -142,7 +157,7 @@ const flips = memo(() => {
         }
 
         return win;
-    }
+    };
 
     return (
         <>
@@ -160,17 +175,7 @@ const flips = memo(() => {
                             <>
                                 {
                                     (context.flips && context.flips.length > 0) ? context.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber).map((flip: any) => {
-                                        const flipIndex = BigNumber.from(flip.args.index).toNumber();
-
-                                        let matchedGuess: any;
-                                        if (guessContext.guesses) {
-                                            guessContext.guesses.forEach((guess: any) => {
-                                                if (BigNumber.from(guess.args.index).toNumber() === flipIndex) {
-                                                    matchedGuess = guess;
-                                                }
-                                            });
-                                        }
-
+                                        const matchedGuess = getMatchedGuess(guessContext, flip);
                                         const matchedSecret = getMatchedSecret(flip);
                                         const win = winDisplay(settleContext, matchedSecret, matchedGuess);
                                         const amount = ethers.utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
