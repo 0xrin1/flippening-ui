@@ -1,130 +1,162 @@
 import React, { useState, useContext } from 'react';
 import { AccountsContext } from '../context/AccountContext';
 import { FlipType } from '../interfaces';
-import symbols from '../lib/symbol';
-import { isExpired, timeUntilExpiration, readableTimeUntilExpiration, readableTimeUntilRetrieval } from '../lib/time';
-import { contract } from '../lib/w3';
-import ProvideGuess from './ProvideGuess';
+import { approve, flippeningAddress, signedContract, signer } from '../lib/w3';
 import styles from '../styles/Flip.module.scss';
-import ProvideSecret from './ProvideSecret';
+import { GuessContext } from '../context/GuessContext';
+import { SettleContext } from '../context/SettleContext';
+import { BigNumber, Contract, utils } from 'ethers';
+import tokenABI from '../lib/tokenABI';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 type PropTypes = {
-    id: number,
     flip: FlipType,
-    amount: number,
-    retrieval?: boolean,
 }
 
 export default function Flip({
-    id,
     flip,
-    amount,
-    retrieval,
 }: PropTypes) {
-    let [ guessing, setGuessing ] = useState(false);
-    let [ expanded, setExpanded ] = useState(false);
-    let [ providingSecret, setProvidingSecret ] = useState(false);
     let { accounts } = useContext(AccountsContext) || {};
+    const guessContext = useContext(GuessContext);
+    const settleContext = useContext(SettleContext);
+    const [guessApproved, setGuessApproved ] = useState(false);
 
-    const toggleProvidingSecret = () => {
-        setProvidingSecret(!providingSecret);
+    const collect = async (index: number, clearSecretString: string) => {
+        await signedContract.settle(index, clearSecretString);
     };
 
-    const startGuessing = () => {
-        setGuessing(true);
-    };
+    const guess = async (flip: any) => {
+        if (guessApproved && signedContract) {
+            console.log('guessing', flip.args.index.toString(), `${Math.random() < 0.5}`);
+            await signedContract.guess(flip.args.index.toString(), `${Math.random() < 0.5}`);
 
-    const cancelGuess = () => {
-        setGuessing(false);
-    };
+            return;
+        }
 
-    const settleGuess = async () => {
-        await contract.methods.settle(id).send({
-            from: accounts[0].address,
+        const tokenContract = new Contract(flip.args.token, tokenABI);
+        const signedTokenContract = tokenContract.connect(signer);
+
+        signedTokenContract.on('Approval', async (owner: any, spender: any) => {
+            if (owner === accounts[0]?.address && spender === flippeningAddress) {
+                setGuessApproved(true);
+            }
         });
 
-        window.location.reload();
+        approve(flip.args.amount, signedTokenContract);
     };
 
-    const toggleExpandedFlip = () => {
-        setExpanded(!expanded);
+    const getMatchedGuess = (guessContext: any, flip: any): any => {
+        let matchedGuess: any;
+        const flipIndex = BigNumber.from(flip.args.index).toNumber();
+
+        if (guessContext.guesses) {
+            guessContext.guesses.forEach((guess: any) => {
+                if (BigNumber.from(guess.args.index).toNumber() === flipIndex) {
+                    matchedGuess = guess;
+                }
+            });
+        }
+
+        return matchedGuess;
     };
 
-    const guessActions = () => {
-        let guess = <div onClick={ startGuessing } className={ styles.flipStatus }>submit guess</div>;
+    const getMatchedSecret = (flip: any): any => {
+        const secrets = localStorage.getItem('secrets');
 
-        if (guessing) {
-            guess = <div onClick={ cancelGuess } className={ styles.flipStatus }>cancel guess</div>;
+        let matchedSecret: any;
+        if (secrets) {
+            JSON.parse(secrets).forEach((secret: any) => {
+                if (secret.hash === flip.transactionHash) {
+                    matchedSecret = secret;
+                }
+            });
         }
 
-        if (flip && flip.guess) {
-            guess = <div onClick={ toggleProvidingSecret } className={ styles.flipStatus }>
-                { providingSecret ? 'cancel retrieval' : 'retrieve with secret' }
-            </div>
-        }
+        return matchedSecret;
+    };
 
-        if (isExpired(timeUntilExpiration(flip))) {
-            guess = <div onClick={ settleGuess } className={ styles.flipStatus }>settle</div>;
+    const winDisplay = (settleContext: any, matchedSecret: any, matchedGuess: any) => {
+        let win = <></>;
 
-            if (guessing) {
-                guess = <div onClick={ cancelGuess } className={ styles.flipStatus }>cancel settle</div>;
+        if (matchedSecret && matchedGuess) {
+            win = <div>
+                <strong>win</strong>
+                <div>no</div>
+            </div>;
+
+            if (JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
+                const collectClick = () => {
+                    collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
+                };
+
+                win = <div>
+                    <strong>win</strong>
+                    <div><button onClick={ collectClick }>collect</button></div>
+                </div>;
             }
         }
 
-        if (flip && flip.settled) {
-            guess = <div onClick={ toggleExpandedFlip } className={ styles.flipStatus }>settled</div>
+        if (matchedGuess && settleContext.settles) {
+            settleContext.settles.forEach((settle: any) => {
+                if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
+                    win = <div>
+                        <strong>win</strong>
+                        <div>yes, and settled</div>
+                    </div>;
+                }
+            });
         }
 
-        return guess;
+        return win;
     };
 
-    let guess = guessActions();
+    const matchedGuess = getMatchedGuess(guessContext, flip);
+    const matchedSecret = getMatchedSecret(flip);
+    const win = winDisplay(settleContext, matchedSecret, matchedGuess);
+    const amount = utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
+    const won: boolean = (matchedSecret?.secretValue && matchedGuess) ? JSON.stringify(matchedSecret.secretValue) !== matchedGuess.args.guess: false;
 
-    let createGuess;
-    if (guessing) {
-        createGuess = <ProvideGuess id={ id } flip={ flip } />;
-    }
+    const guessClick = () => {
+        guess(flip);
+    };
 
-    let provideSecret;
-    if (providingSecret) {
-        provideSecret = <ProvideSecret id={ id } flip={ flip } />
-    }
-
-    let expand;
-    if (expanded) {
-        expand = (
-            <div className={ styles.flipRow }>
-                <div>
-                    <div className={ styles.flipRowKey }>proposer</div>
-                    <div className={ styles.flipRowValue }>{ flip.proposer }</div>
-                </div>
-                <div>
-                    <div className={ styles.flipRowKey }>guesser</div>
-                    <div className={ styles.flipRowValue }>{ flip.challenger }</div>
-                </div>
-                <div>
-                    <div className={ styles.flipRowKey }>secret</div>
-                    <div className={ styles.flipRowValue }>{ flip.secret }</div>
-                </div>
-                <div>
-                    <div className={ styles.flipRowKey }>guess</div>
-                    <div className={ styles.flipRowValue }>{ flip.guess }</div>
-                </div>
+    return <Accordion key={ flip.blockNumber }>
+        <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+        >
+            <div className={ styles.accordionHeader }>
+                <Typography>{ amount } { flip?.args?.symbol }</Typography>
+                <Typography>{ matchedSecret && matchedGuess ? (won ? 'won' : 'lost') : '' }</Typography>
+                <Typography>{ accounts[0]?.address === flip?.args?.creator ? 'Your flip' : '' }</Typography>
             </div>
-        );
-    }
-
-    return <>
-        <div className={ styles.flip }>
-            <div className={[ styles.flipRowFlex, styles.flipHeader ].join(' ')}>
-                <div>{ amount } { symbols.token }</div>
-                <div>{ retrieval ? readableTimeUntilExpiration(flip) : readableTimeUntilRetrieval(flip) }</div>
-                { guess }
-                <div onClick={ toggleExpandedFlip } className={ styles.flipStatus }>details</div>
+        </AccordionSummary>
+        <AccordionDetails>
+            <div>
+                <strong>creator</strong>
+                <div>{ flip.args.creator }</div>
             </div>
-            { expand }
-            { createGuess }
-            { provideSecret }
-        </div>
-    </>;
+            { matchedGuess?.args.guesser && <div>
+                <strong>guesser</strong>
+                <div>{ matchedGuess?.args.guesser }</div>
+            </div> }
+            { matchedGuess?.args.guess ? <div>
+                <strong>guess</strong>
+                <div>{ matchedGuess?.args.guess }</div>
+            </div> : <div>
+                <strong>submit guess</strong>
+                <div><button onClick={ guessClick }>{ guessApproved ? 'submit guess' : 'approve to guess' }</button></div>
+            </div> }
+            { matchedSecret?.secretValue && <div>
+                <strong>secret</strong>
+                <div>{ JSON.stringify(matchedSecret.secretValue) }</div>
+            </div> }
+            { win }
+        </AccordionDetails>
+    </Accordion>;
 };

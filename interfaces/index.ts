@@ -22,12 +22,15 @@ export type SettleType = {
 }
 
 export type FlipType = {
-    proposer: string,
-    challenger: string;
-    secret: string; // Ecrypted with public key of owner.
-    amount: number; // Amount put up by proposer.
-    guess: string; // Guess, not encrypted.
-    expiry: number; // When the default winner in selected. Duration in minutes.
-    createdAt: number; // When the proposition was created.
-    settled: boolean; // Whether the proposition has been settled.
+    blockNumber: string,
+    blockHash: string;
+    transactionHash: string;
+    address: number;
+    args: {
+        amount: number,
+        creator: string,
+        index: number,
+        token: string,
+        symbol: string,
+    },
 }
