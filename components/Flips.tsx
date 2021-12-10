@@ -1,7 +1,7 @@
-import React, { useEffect, useContext, memo } from 'react';
+import React, { useEffect, memo } from 'react';
 import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
-import GuessProvider, { GuessContext } from '../context/GuessContext';
-import SettleProvider, { SettleContext } from '../context/SettleContext';
+import GuessProvider from '../context/GuessContext';
+import SettleProvider from '../context/SettleContext';
 import {
     instantiateContract,
     signer,

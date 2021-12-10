@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, memo } from 'react';
 import { AccountsContext } from '../context/AccountContext';
 import { FlipType } from '../interfaces';
 import { approve, flippeningAddress, signedContract, signer } from '../lib/w3';
@@ -17,11 +17,12 @@ type PropTypes = {
     settles: any[], // TODO: type
 }
 
-export default function Flip({
+// export default function Flip({
+const flip = memo(({
     flip,
     guesses,
     settles,
-}: PropTypes) {
+}: PropTypes) => {
     let { accounts } = useContext(AccountsContext) || {};
     let [ guessApproved, setGuessApproved ] = useState(false);
 
@@ -31,7 +32,6 @@ export default function Flip({
 
     const guess = async (flip: any) => {
         if (guessApproved && signedContract) {
-            console.log('guessing', flip.args.index.toString(), `${Math.random() < 0.5}`);
             await signedContract.guess(flip.args.index.toString(), `${Math.random() < 0.5}`);
 
             return;
@@ -168,4 +168,6 @@ export default function Flip({
             </AccordionDetails>
         </Accordion>
     </>;
-};
+});
+
+export default flip;
