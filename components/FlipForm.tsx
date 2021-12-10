@@ -98,7 +98,6 @@ export default function FlipForm() {
 
         if (!approved) {
             if (signedContract) {
-                // signedTokenContract.on('Approval', async (owner: any, spender: any, amount: any) => {
                 signedTokenContract.on('Approval', async (owner: any, spender: any) => {
                     // Could interfere with other contracts?
                     if (owner === accounts[0]?.address && spender === flippeningAddress) {

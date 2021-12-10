@@ -1,7 +1,7 @@
-import React, { useEffect, memo } from 'react';
+import React, { useEffect, useContext, memo } from 'react';
 import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
-import GuessProvider from '../context/GuessContext';
-import SettleProvider from '../context/SettleContext';
+import GuessProvider, { GuessContext } from '../context/GuessContext';
+import SettleProvider, { SettleContext } from '../context/SettleContext';
 import {
     instantiateContract,
     signer,
@@ -14,6 +14,7 @@ const flips = memo(() => {
     const flipsProvider = FlipsProvider();
     const guessProvider = GuessProvider();
     const settleProvider = SettleProvider();
+    console.log('guessprovider flips.tsx', guessProvider);
 
     const getEvents = async () => {
         await getCreatedEvents();
@@ -101,7 +102,7 @@ const flips = memo(() => {
                                     (context.flips && context.flips.length > 0)
                                         ? context.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber)
                                             .map((flip: any) => {
-                                                return <Flip flip={ flip } />;
+                                                return <Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />;
                                             })
                                         : <p>There are no flips yet...</p>
                                 }

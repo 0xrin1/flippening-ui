@@ -3,8 +3,6 @@ import { AccountsContext } from '../context/AccountContext';
 import { FlipType } from '../interfaces';
 import { approve, flippeningAddress, signedContract, signer } from '../lib/w3';
 import styles from '../styles/Flip.module.scss';
-import { GuessContext } from '../context/GuessContext';
-import { SettleContext } from '../context/SettleContext';
 import { BigNumber, Contract, utils } from 'ethers';
 import tokenABI from '../lib/tokenABI';
 import Accordion from '@mui/material/Accordion';
@@ -15,15 +13,17 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 type PropTypes = {
     flip: FlipType,
+    guesses: any[], // TODO: type
+    settles: any[], // TODO: type
 }
 
 export default function Flip({
     flip,
+    guesses,
+    settles,
 }: PropTypes) {
     let { accounts } = useContext(AccountsContext) || {};
-    const guessContext = useContext(GuessContext);
-    const settleContext = useContext(SettleContext);
-    const [ guessApproved, setGuessApproved ] = useState(false);
+    let [ guessApproved, setGuessApproved ] = useState(false);
 
     const collect = async (index: number, clearSecretString: string) => {
         await signedContract.settle(index, clearSecretString);
@@ -49,12 +49,12 @@ export default function Flip({
         approve(flip.args.amount, signedTokenContract);
     };
 
-    const getMatchedGuess = (guessContext: any, flip: any): any => {
+    const getMatchedGuess = (guesses: any, flip: any): any => {
         let matchedGuess: any;
         const flipIndex = BigNumber.from(flip.args.index).toNumber();
 
-        if (guessContext.guesses) {
-            guessContext.guesses.forEach((guess: any) => {
+        if (guesses) {
+            guesses.forEach((guess: any) => {
                 if (BigNumber.from(guess.args.index).toNumber() === flipIndex) {
                     matchedGuess = guess;
                 }
@@ -79,7 +79,7 @@ export default function Flip({
         return matchedSecret;
     };
 
-    const winDisplay = (settleContext: any, matchedSecret: any, matchedGuess: any) => {
+    const winDisplay = (settles: any, matchedSecret: any, matchedGuess: any) => {
         let win = <></>;
 
         if (matchedSecret && matchedGuess) {
@@ -100,8 +100,8 @@ export default function Flip({
             }
         }
 
-        if (matchedGuess && settleContext.settles) {
-            settleContext.settles.forEach((settle: any) => {
+        if (matchedGuess && settles) {
+            settles.forEach((settle: any) => {
                 if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
                     win = <div>
                         <strong>win</strong>
@@ -114,49 +114,58 @@ export default function Flip({
         return win;
     };
 
-    const matchedGuess = getMatchedGuess(guessContext, flip);
+    const hasWon = (matchedSecret: any, matchedGuess: any): boolean => {
+        if (! matchedSecret?.secretValue || ! matchedGuess) {
+            return false;
+        }
+
+        return JSON.stringify(matchedSecret.secretValue) !== matchedGuess.args.guess;
+    };
+
+    const matchedGuess = getMatchedGuess(guesses, flip);
     const matchedSecret = getMatchedSecret(flip);
-    const win = winDisplay(settleContext, matchedSecret, matchedGuess);
     const amount = utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
-    const won: boolean = (matchedSecret?.secretValue && matchedGuess) ? JSON.stringify(matchedSecret.secretValue) !== matchedGuess.args.guess: false;
+    const won: boolean = hasWon(matchedSecret, matchedGuess);
 
     const guessClick = () => {
         guess(flip);
     };
 
-    return <Accordion key={ flip.blockNumber }>
-        <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-        >
-            <div className={ styles.accordionHeader }>
-                <Typography>{ amount } { flip?.args?.symbol }</Typography>
-                <Typography>{ matchedSecret && matchedGuess ? (won ? 'won' : 'lost') : '' }</Typography>
-                <Typography>{ accounts[0]?.address === flip?.args?.creator ? 'Your flip' : '' }</Typography>
-            </div>
-        </AccordionSummary>
-        <AccordionDetails>
-            <div>
-                <strong>creator</strong>
-                <div>{ flip.args.creator }</div>
-            </div>
-            { matchedGuess?.args.guesser && <div>
-                <strong>guesser</strong>
-                <div>{ matchedGuess?.args.guesser }</div>
-            </div> }
-            { matchedGuess?.args.guess ? <div>
-                <strong>guess</strong>
-                <div>{ matchedGuess?.args.guess }</div>
-            </div> : <div>
-                <strong>submit guess</strong>
-                <div><button onClick={ guessClick }>{ guessApproved ? 'submit guess' : 'approve to guess' }</button></div>
-            </div> }
-            { matchedSecret?.secretValue && <div>
-                <strong>secret</strong>
-                <div>{ JSON.stringify(matchedSecret.secretValue) }</div>
-            </div> }
-            { win }
-        </AccordionDetails>
-    </Accordion>;
+    return <>
+        <Accordion key={ flip.blockNumber }>
+            <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+            >
+                <div className={ styles.accordionHeader }>
+                    <Typography>{ amount } { flip?.args?.symbol }</Typography>
+                    <Typography>{ matchedSecret && matchedGuess ? (won ? 'won' : 'lost') : '' }</Typography>
+                    <Typography>{ accounts[0]?.address === flip?.args?.creator ? 'Your flip' : '' }</Typography>
+                </div>
+            </AccordionSummary>
+            <AccordionDetails>
+                <div>
+                    <strong>creator</strong>
+                    <div>{ flip.args.creator }</div>
+                </div>
+                { matchedGuess?.args.guesser && <div>
+                    <strong>guesser</strong>
+                    <div>{ matchedGuess?.args.guesser }</div>
+                </div> }
+                { matchedGuess?.args.guess ? <div>
+                    <strong>guess</strong>
+                    <div>{ matchedGuess?.args.guess }</div>
+                </div> : <div>
+                    <strong>submit guess</strong>
+                    <div><button onClick={ guessClick }>{ guessApproved ? 'submit guess' : 'approve to guess' }</button></div>
+                </div> }
+                { matchedSecret?.secretValue && <div>
+                    <strong>secret</strong>
+                    <div>{ JSON.stringify(matchedSecret.secretValue) }</div>
+                </div> }
+                { winDisplay(settles, matchedSecret, matchedGuess) }
+            </AccordionDetails>
+        </Accordion>
+    </>;
 };
