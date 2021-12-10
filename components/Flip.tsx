@@ -23,7 +23,7 @@ export default function Flip({
     let { accounts } = useContext(AccountsContext) || {};
     const guessContext = useContext(GuessContext);
     const settleContext = useContext(SettleContext);
-    const [guessApproved, setGuessApproved ] = useState(false);
+    const [ guessApproved, setGuessApproved ] = useState(false);
 
     const collect = async (index: number, clearSecretString: string) => {
         await signedContract.settle(index, clearSecretString);
