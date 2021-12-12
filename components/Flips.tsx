@@ -1,5 +1,6 @@
-import React, { useEffect, memo } from 'react';
-import FlipsProvider, { FlipsContext } from '../context/FlipsContext';
+import React, { useEffect, useState, memo } from 'react';
+import { Pagination } from '@mui/material';
+import FlipsProvider from '../context/FlipsContext';
 import GuessProvider from '../context/GuessContext';
 import SettleProvider from '../context/SettleContext';
 import {
@@ -10,16 +11,24 @@ import {
 } from '../lib/w3';
 import Flip from './Flip';
 
+const pageSize = 6;
+
 const flips = memo(() => {
     const flipsProvider = FlipsProvider();
     const guessProvider = GuessProvider();
     const settleProvider = SettleProvider();
+    const [ page, setPage ] = useState(1);
 
     const getEvents = async () => {
         await getCreatedEvents();
         await getGuessedEvents();
         await getSettledEvents();
     };
+
+    // @ts-ignore
+    const changePage = (event: any, val: any) => {
+        setPage(val);
+    }
 
     const getCreatedEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
@@ -99,9 +108,16 @@ const flips = memo(() => {
 
     let sortedFlips;
     if (flipsProvider.flips && flipsProvider.flips.length > 0) {
+        let mapCounter = 0;
         sortedFlips = flipsProvider.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber)
-            .map((flip: any) => {
-                return <Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />;
+            .flatMap((flip: any) => {
+                mapCounter += 1;
+
+                if (mapCounter > pageSize * page || mapCounter <= pageSize * (page - 1)) {
+                    return [];
+                }
+
+                return [<Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />];
             });
     }
 
@@ -109,7 +125,18 @@ const flips = memo(() => {
         <>
             <h2>Flips</h2>
             {
-                sortedFlips ?? <p>There are no flips yet...</p>
+                flipsProvider.flips
+                    ? <>
+                        { sortedFlips }
+                        <Pagination
+                            count={ Math.ceil(flipsProvider.flips.length / pageSize) }
+                            page={ page }
+                            onChange={ changePage }
+                            color="primary"
+                            defaultPage={ 1 }
+                        />
+                    </>
+                    : <p>There are no flips yet...</p>
             }
         </>
     );
