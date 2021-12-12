@@ -174,7 +174,14 @@ const flip = memo(({
                 </div> : <div>
                     <strong>submit guess</strong>
                     <div>
-                        <Button className={ formStyles.submitButton } variant="contained" color="warning" onClick={ guessClick }>{ guessApproved ? 'submit guess' : 'approve to guess' }</Button>
+                        <Button
+                            className={ formStyles.submitButton }
+                            variant="contained"
+                            color="warning"
+                            onClick={ guessClick }
+                        >
+                            { guessApproved ? 'submit guess' : 'approve to guess' }
+                        </Button>
                     </div>
                 </div> }
                 { matchedSecret?.secretValue && <div>
