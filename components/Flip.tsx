@@ -108,7 +108,7 @@ const flip = memo(({
                 if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
                     win = <div>
                         <p className="mb-2 fw-bolder">win</p>
-                        <div>yes, and settled</div>
+                        <div>settled</div>
                     </div>;
                 }
             });
