@@ -12,7 +12,6 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import formStyles from '../styles/FlipForm.module.scss';
-import 'react-bootstrap';
 
 type PropTypes = {
     flip: FlipType,
@@ -87,30 +86,21 @@ const flip = memo(({
     const winDisplay = (settles: any, matchedSecret: any, matchedGuess: any) => {
         let win = <></>;
 
-        if (matchedSecret && matchedGuess) {
+        if (matchedSecret && matchedGuess && JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
+            const collectClick = () => {
+                collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
+            };
+
             win = <div>
-                <p className="mb-2 fw-bolder">win</p>
-                <div>no</div>
-            </div>;
-
-            if (JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
-                const collectClick = () => {
-                    collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
-                };
-
-                win = <><p className="mb-2 fw-bolder">win</p>
-                    <div>
-                        <Button
-                            className={ formStyles.submitButton }
-                            variant="contained"
-                            color="success"
-                            onClick={ collectClick }
-                        >
-                            collect
-                        </Button>
-                    </div>
-                </>;
-            }
+                <Button
+                    className={ formStyles.submitButton }
+                    variant="contained"
+                    color="success"
+                    onClick={ collectClick }
+                >
+                    collect
+                </Button>
+            </div>
         }
 
         if (matchedGuess && settles) {
