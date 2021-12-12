@@ -133,6 +133,7 @@ const flips = memo(() => {
         };
     }
 
+    // @ts-ignore
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setTab(newValue);
     };

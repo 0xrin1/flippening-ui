@@ -8,8 +8,10 @@ import tokenABI from '../lib/tokenABI';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import formStyles from '../styles/FlipForm.module.scss';
 
 type PropTypes = {
     flip: FlipType,
@@ -162,7 +164,9 @@ const flip = memo(({
                     <div>{ matchedGuess?.args.guess }</div>
                 </div> : <div>
                     <strong>submit guess</strong>
-                    <div><button onClick={ guessClick }>{ guessApproved ? 'submit guess' : 'approve to guess' }</button></div>
+                    <div>
+                        <Button className={ formStyles.submitButton } variant="contained" color="warning" onClick={ guessClick }>{ guessApproved ? 'submit guess' : 'approve to guess' }</Button>
+                    </div>
                 </div> }
                 { matchedSecret?.secretValue && <div>
                     <strong>secret</strong>

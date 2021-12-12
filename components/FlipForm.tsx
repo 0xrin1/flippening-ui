@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Button from 'react-bootstrap/Button';
+import BSButton from 'react-bootstrap/Button';
+import Button from '@mui/material/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import { AccountsContext } from '../context/AccountContext';
 import styles from '../styles/FlipForm.module.scss';
@@ -142,10 +143,10 @@ export default function FlipForm() {
                             </Form.Group>
 
                             <ButtonGroup>
-                                <Button onClick={() => setRange(10)} variant="outline-primary">0.1</Button>
-                                <Button onClick={() => setRange(50)} variant="outline-primary">0.5</Button>
-                                <Button onClick={() => setRange(70)} variant="outline-primary">0.7</Button>
-                                <Button onClick={() => setRange(100)} variant="outline-primary">1</Button>
+                                <BSButton onClick={() => setRange(10)} variant="outline-primary">0.1</BSButton>
+                                <BSButton onClick={() => setRange(50)} variant="outline-primary">0.5</BSButton>
+                                <BSButton onClick={() => setRange(70)} variant="outline-primary">0.7</BSButton>
+                                <BSButton onClick={() => setRange(100)} variant="outline-primary">1</BSButton>
                             </ButtonGroup>
 
                             <Form.Range onChange={onChangeRange} value={range} min="0" max="100" id="flip-range" />
@@ -159,7 +160,7 @@ export default function FlipForm() {
                                 }
                             </>
 
-                            <Button className={styles.submitButton} variant="warning" type="submit" disabled={ loading }>{ approved ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                            <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ approved ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
                         </Form>
                     </Container>
                 )
