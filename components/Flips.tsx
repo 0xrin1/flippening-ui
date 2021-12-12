@@ -144,10 +144,12 @@ const flips = memo(() => {
                     ? <>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <Tabs value={ tab } onChange={ handleChange }>
-                                <Tab label="All" { ...a11yProps(0) } />
-                                <Tab label="Yours" { ...a11yProps(1) } />
-                                <Tab label="Expired" { ...a11yProps(2) } />
-                                <Tab label="Settled" { ...a11yProps(3) } />
+                                <Tab label="Open" { ...a11yProps(0) } />
+                                <Tab label="All" { ...a11yProps(1) } />
+                                <Tab label="Yours" { ...a11yProps(2) } />
+                                <Tab label="Guessed" { ...a11yProps(3) } />
+                                <Tab label="Expired" { ...a11yProps(4) } />
+                                <Tab label="Settled" { ...a11yProps(5) } />
                             </Tabs>
                         </Box>
                         <div className={ styles.flipTabContainer }>
@@ -155,12 +157,18 @@ const flips = memo(() => {
                                 { sortedFlips }
                             </div>
                             <div hidden={ tab !== 1 }>
-                                Yours
+                                All
                             </div>
                             <div hidden={ tab !== 2 }>
-                                Expired
+                                Yours
                             </div>
                             <div hidden={ tab !== 3 }>
+                                Guessed
+                            </div>
+                            <div hidden={ tab !== 4 }>
+                                Expired
+                            </div>
+                            <div hidden={ tab !== 5 }>
                                 Settled
                             </div>
                         </div>
