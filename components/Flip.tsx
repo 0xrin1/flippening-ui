@@ -12,6 +12,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import formStyles from '../styles/FlipForm.module.scss';
+import 'react-bootstrap';
 
 type PropTypes = {
     flip: FlipType,
@@ -88,7 +89,7 @@ const flip = memo(({
 
         if (matchedSecret && matchedGuess) {
             win = <div>
-                <strong>win</strong>
+                <p className="mb-2 fw-bolder">win</p>
                 <div>no</div>
             </div>;
 
@@ -97,8 +98,7 @@ const flip = memo(({
                     collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
                 };
 
-                win = <div>
-                    <strong>win</strong>
+                win = <><p className="mb-2 fw-bolder">win</p>
                     <div>
                         <Button
                             className={ formStyles.submitButton }
@@ -109,7 +109,7 @@ const flip = memo(({
                             collect
                         </Button>
                     </div>
-                </div>;
+                </>;
             }
         }
 
@@ -117,7 +117,7 @@ const flip = memo(({
             settles.forEach((settle: any) => {
                 if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
                     win = <div>
-                        <strong>win</strong>
+                        <p className="mb-2 fw-bolder">win</p>
                         <div>yes, and settled</div>
                     </div>;
                 }
@@ -161,19 +161,30 @@ const flip = memo(({
             </AccordionSummary>
             <AccordionDetails>
                 <div>
-                    <strong>creator</strong>
-                    <div>{ flip.args.creator }</div>
+                    <p className="mb-2 fw-bolder">creator</p>
+                    <div className="mb-3">
+                        { flip.args.creator }
+                    </div>
                 </div>
                 { matchedGuess?.args.guesser && <div>
-                    <strong>guesser</strong>
-                    <div>{ matchedGuess?.args.guesser }</div>
+                    <p className="mb-2 fw-bolder">guesser</p>
+                    <div className="mb-3">
+                        { matchedGuess?.args.guesser }
+                    </div>
+                </div> }
+                { matchedSecret?.secretValue && <div>
+                    <p className="mb-2 fw-bolder">secret</p>
+                    <div className="mb-3">
+                        { JSON.stringify(matchedSecret.secretValue) }
+                    </div>
                 </div> }
                 { matchedGuess?.args.guess ? <div>
-                    <strong>guess</strong>
-                    <div>{ matchedGuess?.args.guess }</div>
+                    <p className="mb-2 fw-bolder">guess</p>
+                    <div className="mb-3">
+                        { matchedGuess?.args.guess }
+                    </div>
                 </div> : <div>
-                    <strong>submit guess</strong>
-                    <div>
+                    <div className="mb-3">
                         <Button
                             className={ formStyles.submitButton }
                             variant="contained"
@@ -183,10 +194,6 @@ const flip = memo(({
                             { guessApproved ? 'submit guess' : 'approve to guess' }
                         </Button>
                     </div>
-                </div> }
-                { matchedSecret?.secretValue && <div>
-                    <strong>secret</strong>
-                    <div>{ JSON.stringify(matchedSecret.secretValue) }</div>
                 </div> }
                 { winDisplay(settles, matchedSecret, matchedGuess) }
             </AccordionDetails>
