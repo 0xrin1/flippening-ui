@@ -14,7 +14,6 @@ const flips = memo(() => {
     const flipsProvider = FlipsProvider();
     const guessProvider = GuessProvider();
     const settleProvider = SettleProvider();
-    console.log('guessprovider flips.tsx', guessProvider);
 
     const getEvents = async () => {
         await getCreatedEvents();
@@ -53,7 +52,9 @@ const flips = memo(() => {
             }
         }
 
-        flipsProvider.saveFlips(newEvents);
+        if (newEvents !== flipsProvider.flips) {
+            flipsProvider.saveFlips(newEvents);
+        }
     };
 
     const getGuessedEvents = async () => {
@@ -61,7 +62,9 @@ const flips = memo(() => {
         const eventFilter = signedContract.filters.Guess();
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
-        guessProvider.saveGuesses(events);
+        if (events !== guessProvider.guesses) {
+            guessProvider.saveGuesses(events);
+        }
     };
 
     const getSettledEvents = async () => {
@@ -69,7 +72,9 @@ const flips = memo(() => {
         const eventFilter = signedContract.filters.Settled();
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
-        settleProvider.saveSettles(events);
+        if (events !== settleProvider.saveSettles) {
+            settleProvider.saveSettles(events);
+        }
     };
 
     useEffect(() => {
@@ -90,27 +95,22 @@ const flips = memo(() => {
         }
     }, []);
 
+    let sortedFlips;
+    if (flipsProvider.flips && flipsProvider.flips.length > 0) {
+        sortedFlips = flipsProvider.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber)
+            .map((flip: any) => {
+                return <Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />;
+            });
+    }
+
     return (
         <>
-            <FlipsContext.Provider value={ flipsProvider }>
-                <FlipsContext.Consumer>
-                    {(context: any) => (
-                        <>
-                            <h2>Flips</h2>
-                            <>
-                                {
-                                    (context.flips && context.flips.length > 0)
-                                        ? context.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber)
-                                            .map((flip: any) => {
-                                                return <Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />;
-                                            })
-                                        : <p>There are no flips yet...</p>
-                                }
-                            </>
-                        </>
-                    )}
-                </FlipsContext.Consumer>
-            </FlipsContext.Provider>
+            <h2>Flips</h2>
+            <>
+                {
+                    sortedFlips ?? <p>There are no flips yet...</p>
+                }
+            </>
         </>
     );
 });

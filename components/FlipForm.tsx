@@ -14,12 +14,12 @@ import tokenABI from '../lib/tokenABI';
 export default function FlipForm() {
     let { accounts } = useContext(AccountsContext) || {};
 
-    let [network, setNetwork] = useState('bsc-test');
-    let [range, setRange] = useState(10);
-    let [token, setToken] = useState(defaultTokenAddress);
-    let [loading, setLoading] = useState(false);
+    let [ network, setNetwork ] = useState('bsc-test');
+    let [ range, setRange ] = useState(10);
+    let [ token, setToken ] = useState(defaultTokenAddress);
+    let [ loading, setLoading ] = useState(false);
 
-    let [approved, setApproved] = useState(false);
+    let [ approved, setApproved ] = useState(false);
 
     useEffect(() => {
         if (signedContract) {
