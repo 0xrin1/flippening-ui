@@ -1,5 +1,8 @@
 import React, { useEffect, useState, memo } from 'react';
-import { Pagination } from '@mui/material';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
+import Pagination from '@mui/material/Pagination';
 import FlipsProvider from '../context/FlipsContext';
 import GuessProvider from '../context/GuessContext';
 import SettleProvider from '../context/SettleContext';
@@ -18,6 +21,7 @@ const flips = memo(() => {
     const guessProvider = GuessProvider();
     const settleProvider = SettleProvider();
     const [ page, setPage ] = useState(1);
+    const [ tab, setTab ] = React.useState(0);
 
     const getEvents = async () => {
         await getCreatedEvents();
@@ -61,7 +65,7 @@ const flips = memo(() => {
             }
         }
 
-        if (newEvents !== flipsProvider.flips) {
+        if (newEvents && newEvents !== flipsProvider.flips) {
             flipsProvider.saveFlips(newEvents);
         }
     };
@@ -72,7 +76,7 @@ const flips = memo(() => {
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
-        if (events !== guessProvider.guesses) {
+        if (events && events !== guessProvider.guesses) {
             guessProvider.saveGuesses(events);
         }
     };
@@ -83,7 +87,7 @@ const flips = memo(() => {
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
-        if (events !== settleProvider.saveSettles) {
+        if (events && events !== settleProvider.saveSettles) {
             settleProvider.saveSettles(events);
         }
     };
@@ -110,16 +114,27 @@ const flips = memo(() => {
     if (flipsProvider.flips && flipsProvider.flips.length > 0) {
         let mapCounter = 0;
         sortedFlips = flipsProvider.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber)
-            .flatMap((flip: any) => {
-                mapCounter += 1;
+        .flatMap((flip: any) => {
+            mapCounter += 1;
 
-                if (mapCounter > pageSize * page || mapCounter <= pageSize * (page - 1)) {
-                    return [];
-                }
+            if (mapCounter > pageSize * page || mapCounter <= pageSize * (page - 1)) {
+                return [];
+            }
 
-                return [<Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />];
-            });
+            return [<Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />];
+        });
     }
+
+    const a11yProps = (index: number) => {
+        return {
+            id: `simple-tab-${index}`,
+            'aria-controls': `simple-tabpanel-${index}`,
+        };
+    }
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setTab(newValue);
+    };
 
     return (
         <>
@@ -127,7 +142,26 @@ const flips = memo(() => {
             {
                 flipsProvider.flips
                     ? <>
-                        { sortedFlips }
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                            <Tabs value={ tab } onChange={ handleChange }>
+                                <Tab label="All" { ...a11yProps(0) } />
+                                <Tab label="Yours" { ...a11yProps(1) } />
+                                <Tab label="Expired" { ...a11yProps(2) } />
+                                <Tab label="Settled" { ...a11yProps(3) } />
+                            </Tabs>
+                        </Box>
+                        <div hidden={ tab !== 0 }>
+                            { sortedFlips }
+                        </div>
+                        <div hidden={ tab !== 1 }>
+                            Yours
+                        </div>
+                        <div hidden={ tab !== 2 }>
+                            Expired
+                        </div>
+                        <div hidden={ tab !== 3 }>
+                            Settled
+                        </div>
                         <Pagination
                             count={ Math.ceil(flipsProvider.flips.length / pageSize) }
                             page={ page }
