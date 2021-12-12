@@ -21,7 +21,7 @@ const HomePage = () => {
             <Header></Header>
             <div className="main">
                 <Container>
-                    <Row>
+                    <Row className="mb-5">
                         <Col md="6">
                             <h2>How it works?</h2>
 

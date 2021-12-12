@@ -13,6 +13,7 @@ import {
     provider,
 } from '../lib/w3';
 import Flip from './Flip';
+import styles from '../styles/Flip.module.scss';
 
 const pageSize = 6;
 
@@ -138,7 +139,6 @@ const flips = memo(() => {
 
     return (
         <>
-            <h2>Flips</h2>
             {
                 flipsProvider.flips
                     ? <>
@@ -150,17 +150,19 @@ const flips = memo(() => {
                                 <Tab label="Settled" { ...a11yProps(3) } />
                             </Tabs>
                         </Box>
-                        <div hidden={ tab !== 0 }>
-                            { sortedFlips }
-                        </div>
-                        <div hidden={ tab !== 1 }>
-                            Yours
-                        </div>
-                        <div hidden={ tab !== 2 }>
-                            Expired
-                        </div>
-                        <div hidden={ tab !== 3 }>
-                            Settled
+                        <div className={ styles.flipTabContainer }>
+                            <div hidden={ tab !== 0 }>
+                                { sortedFlips }
+                            </div>
+                            <div hidden={ tab !== 1 }>
+                                Yours
+                            </div>
+                            <div hidden={ tab !== 2 }>
+                                Expired
+                            </div>
+                            <div hidden={ tab !== 3 }>
+                                Settled
+                            </div>
                         </div>
                         <Pagination
                             count={ Math.ceil(flipsProvider.flips.length / pageSize) }
