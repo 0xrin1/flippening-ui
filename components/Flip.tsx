@@ -99,7 +99,16 @@ const flip = memo(({
 
                 win = <div>
                     <strong>win</strong>
-                    <div><button onClick={ collectClick }>collect</button></div>
+                    <div>
+                        <Button
+                            className={ formStyles.submitButton }
+                            variant="contained"
+                            color="success"
+                            onClick={ collectClick }
+                        >
+                            collect
+                        </Button>
+                    </div>
                 </div>;
             }
         }
