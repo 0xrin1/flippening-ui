@@ -62,6 +62,7 @@ const flips = memo(() => {
         const eventFilter = signedContract.filters.Guess();
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
+
         if (events !== guessProvider.guesses) {
             guessProvider.saveGuesses(events);
         }
@@ -72,6 +73,7 @@ const flips = memo(() => {
         const eventFilter = signedContract.filters.Settled();
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
+
         if (events !== settleProvider.saveSettles) {
             settleProvider.saveSettles(events);
         }
@@ -106,11 +108,9 @@ const flips = memo(() => {
     return (
         <>
             <h2>Flips</h2>
-            <>
-                {
-                    sortedFlips ?? <p>There are no flips yet...</p>
-                }
-            </>
+            {
+                sortedFlips ?? <p>There are no flips yet...</p>
+            }
         </>
     );
 });

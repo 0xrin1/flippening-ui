@@ -26,6 +26,8 @@ const flip = memo(({
     let { accounts } = useContext(AccountsContext) || {};
     let [ guessApproved, setGuessApproved ] = useState(false);
 
+    const account = accounts.length > 0 ? accounts[0] : {};
+
     const collect = async (index: number, clearSecretString: string) => {
         await signedContract.settle(index, clearSecretString);
     };
@@ -41,7 +43,7 @@ const flip = memo(({
         const signedTokenContract = tokenContract.connect(signer);
 
         signedTokenContract.on('Approval', async (owner: any, spender: any) => {
-            if (owner === accounts[0]?.address && spender === flippeningAddress) {
+            if (account.address && owner === account.address && spender === flippeningAddress) {
                 setGuessApproved(true);
             }
         });
@@ -126,6 +128,8 @@ const flip = memo(({
     const matchedSecret = getMatchedSecret(flip);
     const amount = utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
     const won: boolean = hasWon(matchedSecret, matchedGuess);
+    const yours: boolean = account.address === flip?.args?.creator;
+    const symbol = flip?.args?.symbol;
 
     const guessClick = () => {
         guess(flip);
@@ -139,9 +143,9 @@ const flip = memo(({
                 id="panel1a-header"
             >
                 <div className={ styles.accordionHeader }>
-                    <Typography>{ amount } { flip?.args?.symbol }</Typography>
+                    <Typography>{ amount } { symbol }</Typography>
                     <Typography>{ matchedSecret && matchedGuess ? (won ? 'won' : 'lost') : '' }</Typography>
-                    <Typography>{ accounts[0]?.address === flip?.args?.creator ? 'Your flip' : '' }</Typography>
+                    <Typography>{ yours ? 'Your flip' : '' }</Typography>
                 </div>
             </AccordionSummary>
             <AccordionDetails>

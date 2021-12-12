@@ -17,7 +17,6 @@ const SettleProvider: () => SettleContextData = () => {
     const [settles, setSettles] = useState<SettleType[] | null>(null);
 
     const saveSettles = useCallback((newSettles: SettleType[]) => {
-        console.log('setting settles', newSettles);
         setSettles([...newSettles]);
     }, [setSettles]);
 

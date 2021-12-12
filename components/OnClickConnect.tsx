@@ -19,7 +19,7 @@ import { AccountsContext } from '../context/AccountContext';
 // }
 
 export default function OnClickConnect() {
-    let { saveAccounts } = useContext(AccountsContext) || {};
+    let { accounts, saveAccounts } = useContext(AccountsContext) || {};
 
     const onClickConnect = async (saveAccounts: any) => {
         if (! (await ethEnabled())) {
@@ -28,9 +28,9 @@ export default function OnClickConnect() {
         }
 
         if (signer) {
-            const accounts = [await signer.getAddress()];
-            if ([] !== accounts && typeof saveAccounts !== 'undefined') {
-                const newAccounts = await Promise.all(accounts.map(async (address: string) => {
+            const ethersAccounts = [await signer.getAddress()];
+            if ([] !== ethersAccounts && typeof saveAccounts !== 'undefined') {
+                const newAccounts = await Promise.all(ethersAccounts.map(async (address: string) => {
                     const balance = await provider.getBalance(address);
 
                     return {
@@ -38,6 +38,11 @@ export default function OnClickConnect() {
                         balance: utils.formatEther(balance.toString()).toString(),
                     };
                 }));
+
+                // Memoize to prevent infinite render loop on entire application
+                if (JSON.stringify(newAccounts) === JSON.stringify(accounts)) {
+                    return;
+                }
 
                 saveAccounts(newAccounts);
             }

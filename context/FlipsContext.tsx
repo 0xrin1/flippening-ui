@@ -17,7 +17,6 @@ const FlipsProvider: () => FlipsContextData = () => {
     const [flips, setFlips] = useState<FlipType[] | null>(null);
 
     const saveFlips = useCallback((newFlips: FlipType[]) => {
-        console.log('setting flips', newFlips);
         setFlips([...newFlips]);
     }, [setFlips]);
 

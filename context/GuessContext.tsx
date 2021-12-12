@@ -17,7 +17,6 @@ const GuessProvider: () => GuessContextData = () => {
     const [guesses, setGuesses] = useState<GuessType[] | null>(null);
 
     const saveGuesses = useCallback((newGuesses: GuessType[]) => {
-        console.log('setting guesses', newGuesses);
         setGuesses([...newGuesses]);
     }, [setGuesses]);
 
