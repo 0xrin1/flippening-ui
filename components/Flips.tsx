@@ -147,7 +147,7 @@ const flips = memo(() => {
                             <Tabs value={ tab } onChange={ handleChange }>
                                 <Tab label="Open" { ...a11yProps(0) } />
                                 <Tab label="All" { ...a11yProps(1) } />
-                                <Tab label="Yours" { ...a11yProps(2) } />
+                                <Tab label="Mine" { ...a11yProps(2) } />
                                 <Tab label="Guessed" { ...a11yProps(3) } />
                                 <Tab label="Expired" { ...a11yProps(4) } />
                                 <Tab label="Settled" { ...a11yProps(5) } />
