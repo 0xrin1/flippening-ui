@@ -35,8 +35,7 @@ const flips = memo(() => {
     const getEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Created();
-        // TODO: Only subtract 5000 when BSC chain because it sucks
-        let events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
+        let events = await signedContract.queryFilter(eventFilter, currentBlock, currentBlock);
 
         let newEvents: FlipType[] = [];
 
@@ -101,15 +100,13 @@ const flips = memo(() => {
     const getGuessedEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Guess();
-        // TODO: Only subtract 5000 when BSC chain because it sucks
-        return signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
+        return signedContract.queryFilter(eventFilter, currentBlock, currentBlock);
     };
 
     const getSettledEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Settled();
-        // TODO: Only subtract 5000 when BSC chain because it sucks
-        return signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
+        return signedContract.queryFilter(eventFilter, currentBlock, currentBlock);
     };
 
     useEffect(() => {
