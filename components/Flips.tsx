@@ -4,8 +4,6 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Pagination from '@mui/material/Pagination';
 import FlipsProvider from '../context/FlipsContext';
-import GuessProvider from '../context/GuessContext';
-import SettleProvider from '../context/SettleContext';
 import { AccountsContext } from '../context/AccountContext';
 import {
     instantiateContract,
@@ -22,8 +20,6 @@ const pageSize = 6;
 
 const flips = memo(() => {
     const flipsProvider = FlipsProvider();
-    const guessProvider = GuessProvider();
-    const settleProvider = SettleProvider();
 
     let { accounts } = useContext(AccountsContext) || {}
     const account = accounts?.length > 0 ? accounts[0] : {};
@@ -85,7 +81,7 @@ const flips = memo(() => {
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
-        if (events && events !== guessProvider.guesses) {
+        if (events) {
             flipsProvider.saveGuesses(events);
         }
     };
@@ -96,7 +92,7 @@ const flips = memo(() => {
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
-        if (events && events !== settleProvider.saveSettles) {
+        if (events) {
             flipsProvider.saveSettles(events);
         }
     };
@@ -142,7 +138,7 @@ const flips = memo(() => {
                         return [];
                     }
 
-                    return [<Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />];
+                    return [<Flip flip={ flip } />];
                 });
         }
 

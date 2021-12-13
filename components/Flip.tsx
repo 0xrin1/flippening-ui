@@ -15,15 +15,11 @@ import formStyles from '../styles/FlipForm.module.scss';
 
 type PropTypes = {
     flip: FlipType,
-    guesses: any[], // TODO: type
-    settles: any[], // TODO: type
 }
 
 // export default function Flip({
 const flip = memo(({
     flip,
-    guesses,
-    settles,
 }: PropTypes) => {
     let { accounts } = useContext(AccountsContext) || {};
     const account = accounts?.length > 0 ? accounts[0] : {};
@@ -53,21 +49,6 @@ const flip = memo(({
         approve(flip.args.amount, signedTokenContract);
     };
 
-    const getMatchedGuess = (guesses: any, flip: any): any => {
-        let matchedGuess: any;
-        const flipIndex = BigNumber.from(flip.args.index).toNumber();
-
-        if (guesses) {
-            guesses.forEach((guess: any) => {
-                if (BigNumber.from(guess.args.index).toNumber() === flipIndex) {
-                    matchedGuess = guess;
-                }
-            });
-        }
-
-        return matchedGuess;
-    };
-
     const getMatchedSecret = (flip: any): any => {
         const secrets = localStorage.getItem('secrets');
 
@@ -83,12 +64,12 @@ const flip = memo(({
         return matchedSecret;
     };
 
-    const winDisplay = (settles: any, matchedSecret: any, matchedGuess: any) => {
+    const winDisplay = (matchedSecret: any) => {
         let win = <></>;
 
-        if (matchedSecret && matchedGuess && JSON.stringify(matchedSecret.secretValue) !== matchedGuess?.args.guess) {
+        if (matchedSecret && flip?.args?.guess && JSON.stringify(matchedSecret.secretValue) !== flip?.args?.guess) {
             const collectClick = () => {
-                collect(BigNumber.from(matchedGuess.args.index).toNumber(), matchedSecret.secret);
+                collect(BigNumber.from(flip?.args?.index).toNumber(), matchedSecret.secret);
             };
 
             win = <div>
@@ -103,32 +84,27 @@ const flip = memo(({
             </div>
         }
 
-        if (matchedGuess && settles) {
-            settles.forEach((settle: any) => {
-                if (BigNumber.from(settle.args.index).toNumber() === BigNumber.from(matchedGuess.args.index).toNumber()) {
-                    win = <div>
-                        <p className="mb-2 fw-bolder">win</p>
-                        <div>settled</div>
-                    </div>;
-                }
-            });
+        if (flip?.args?.guess && Boolean(flip?.args?.settler)) {
+            win = <div>
+                <p className="mb-2 fw-bolder">win</p>
+                <div>settled</div>
+            </div>;
         }
 
         return win;
     };
 
-    const hasWon = (matchedSecret: any, matchedGuess: any): boolean => {
-        if (! matchedSecret?.secretValue || ! matchedGuess) {
+    const hasWon = (matchedSecret: any): boolean => {
+        if (! matchedSecret?.secretValue || ! flip?.args?.guess) {
             return false;
         }
 
-        return JSON.stringify(matchedSecret.secretValue) !== matchedGuess.args.guess;
+        return JSON.stringify(matchedSecret.secretValue) !== flip.args.guess;
     };
 
-    const matchedGuess = getMatchedGuess(guesses, flip);
     const matchedSecret = getMatchedSecret(flip);
     const amount = utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
-    const won: boolean = hasWon(matchedSecret, matchedGuess);
+    const won: boolean = hasWon(matchedSecret);
     const yours: boolean = account.address === flip?.args?.creator;
     const symbol = flip?.args?.symbol;
 
@@ -145,7 +121,7 @@ const flip = memo(({
             >
                 <div className={ styles.accordionHeader }>
                     <Typography>{ amount } { symbol }</Typography>
-                    <Typography>{ matchedSecret && matchedGuess ? (won ? 'won' : 'lost') : '' }</Typography>
+                    <Typography>{ matchedSecret && guess ? (won ? 'won' : 'lost') : '' }</Typography>
                     <Typography>{ yours ? 'mine' : '' }</Typography>
                 </div>
             </AccordionSummary>
@@ -156,10 +132,10 @@ const flip = memo(({
                         { flip.args.creator }
                     </div>
                 </div>
-                { matchedGuess?.args.guesser && <div>
+                { flip?.args.guesser && <div>
                     <p className="mb-2 fw-bolder">guesser</p>
                     <div className="mb-3">
-                        { matchedGuess?.args.guesser }
+                        { flip?.args.guesser }
                     </div>
                 </div> }
                 { matchedSecret?.secretValue && <div>
@@ -168,10 +144,10 @@ const flip = memo(({
                         { JSON.stringify(matchedSecret.secretValue) }
                     </div>
                 </div> }
-                { matchedGuess?.args.guess ? <div>
+                { flip?.args.guess ? <div>
                     <p className="mb-2 fw-bolder">guess</p>
                     <div className="mb-3">
-                        { matchedGuess?.args.guess }
+                        { flip?.args.guess }
                     </div>
                 </div> : <div>
                     <div className="mb-3">
@@ -185,7 +161,7 @@ const flip = memo(({
                         </Button>
                     </div>
                 </div> }
-                { winDisplay(settles, matchedSecret, matchedGuess) }
+                { winDisplay(matchedSecret) }
             </AccordionDetails>
         </Accordion>
     </>;
