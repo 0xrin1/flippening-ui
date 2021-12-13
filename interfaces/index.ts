@@ -38,6 +38,7 @@ export type FlipType = {
     blockHash: string;
     transactionHash: string;
     address: string;
+    timestamp: number;
     args: {
         amount: number,
         creator: string,

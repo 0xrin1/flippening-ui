@@ -15,6 +15,7 @@ import { BigNumber } from 'ethers';
 import Flip from './Flip';
 import styles from '../styles/Flip.module.scss';
 import { FlipType } from '../interfaces';
+import { isExpired, timeUntilExpiration } from '../lib/time';
 
 const pageSize = 6;
 
@@ -51,6 +52,7 @@ const flips = memo(() => {
                     blockHash: event.blockHash,
                     transactionHash: event.transactionHash,
                     address: event.address,
+                    timestamp: (await event.getBlock()).timestamp,
                     args: {
                         amount: event?.args?.amount,
                         creator: event?.args?.creator,
@@ -170,7 +172,7 @@ const flips = memo(() => {
     };
 
     const openFlips = sortedFlips((flip: FlipType) => {
-        if (flip.args.guesser) {
+        if (flip.args.guesser || isExpired(timeUntilExpiration(flip))) {
             return false;
         }
 
@@ -194,10 +196,8 @@ const flips = memo(() => {
         return Boolean(flip.args.guesser);
     });
 
-    // @ts-ignore
     const expiredFlips = sortedFlips((flip: FlipType) => {
-        // TODO
-        return false;
+        return isExpired(timeUntilExpiration(flip));
     });
 
     const settledFlips = sortedFlips((flip: FlipType) => {
