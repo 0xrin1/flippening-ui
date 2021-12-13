@@ -185,6 +185,7 @@ const flips = memo(() => {
         return Boolean(flip.args.guesser);
     });
 
+    // @ts-ignore
     const expiredFlips = sortedFlips((flip: FlipType) => {
         // TODO
         return false;
