@@ -56,7 +56,6 @@ const FlipsProvider: () => FlipsContextData = () => {
                         return flip;
                     }
 
-                    console.log('updating flip', flip);
                     flip.args.guesser = guess.args.guesser;
                     flip.args.guess = guess.args.guess;
                 });
