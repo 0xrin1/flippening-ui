@@ -131,7 +131,7 @@ export default function FlipForm() {
                         <Form onSubmit={ onSubmit }>
                             <FloatingLabel controlId="floatingSelect" label="Select network">
                                 <Form.Select onChange={onChangeNetwork} value={network}>
-                                    <option value="bsc-test">BSC Testnet</option>
+                                    <option value="bsc-test">Avalanche Testnet</option>
                                     <option disabled value="eth">Ethereum</option>
                                 </Form.Select>
                             </FloatingLabel>
