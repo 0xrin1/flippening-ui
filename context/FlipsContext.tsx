@@ -27,8 +27,8 @@ const FlipsProvider: () => FlipsContextData = () => {
 
     const saveSettles = useCallback((newSettles: SettleType[]) => {
         if (flips) {
-            newSettles.forEach(settle => {
-                const newFlips = flips.map(flip => {
+            const newFlips = flips.map(flip => {
+                newSettles.forEach(settle => {
                     const settleIndex = BigNumber.from(settle.args.index).toNumber();
                     const flipIndex = BigNumber.from(flip.args.index).toNumber();
                     if (flipIndex !== settleIndex) {
@@ -37,32 +37,34 @@ const FlipsProvider: () => FlipsContextData = () => {
 
                     flip.args.settler = settle.args.settler;
 
-                    return flip;
                 });
 
-                saveFlips([...newFlips]);
+                return flip;
             });
+
+            saveFlips([...newFlips]);
         }
     }, [flips, saveFlips]);
 
     const saveGuesses = useCallback((newGuesses: GuessType[]) => {
         if (flips) {
-            newGuesses.forEach(guess => {
-                const newFlips = flips.map(flip => {
+            const newFlips = flips.map(flip => {
+                newGuesses.forEach(guess => {
                     const guessIndex = BigNumber.from(guess.args.index).toNumber();
                     const flipIndex = BigNumber.from(flip.args.index).toNumber();
                     if (flipIndex !== guessIndex) {
                         return flip;
                     }
 
+                    console.log('updating flip', flip);
                     flip.args.guesser = guess.args.guesser;
                     flip.args.guess = guess.args.guess;
-
-                    return flip;
                 });
 
-                saveFlips([...newFlips]);
+                return flip;
             });
+
+            saveFlips([...newFlips]);
         }
     }, [flips, saveFlips]);
 

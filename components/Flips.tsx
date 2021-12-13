@@ -81,7 +81,7 @@ const flips = memo(() => {
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
-        if (events) {
+        if (events && flipsProvider?.saveGuesses) {
             flipsProvider.saveGuesses(events);
         }
     };
@@ -92,7 +92,7 @@ const flips = memo(() => {
         // TODO: Only subtract 5000 when BSC chain because it sucks
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
-        if (events) {
+        if (events && flipsProvider?.saveSettles) {
             flipsProvider.saveSettles(events);
         }
     };
