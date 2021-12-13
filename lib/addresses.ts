@@ -24,6 +24,11 @@ const addresses: {[key: string]: string|any} = {
             testnet: '0xa610A2D54cF77FFf7Eb721A49310C545992AC87c',
             mainnet: '0x0000000000000000000000000000000000000000',
         },
+        ava: {
+            symbol: 'AVAX',
+            testnet: '0x87142Db455cbC047cEc0a9fD9fD8400b4Ee803Ce',
+            mainnet: '0x0000000000000000000000000000000000000000',
+        },
         poly: {
             symbol: 'MATIC',
             testnet: '0x0000000000000000000000000000000000000000',

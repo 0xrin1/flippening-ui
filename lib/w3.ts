@@ -5,7 +5,7 @@ import { ethers, Contract, providers, Signer } from 'ethers';
 
 const determineFlippeningAddress = () => {
     if (process.env.NODE_ENV === 'production') {
-        return addresses.flippening.bsc.testnet;
+        return addresses.flippening.ava.testnet;
     }
 
     return addresses.flippening.eth.local;
