@@ -26,9 +26,9 @@ const flip = memo(({
     settles,
 }: PropTypes) => {
     let { accounts } = useContext(AccountsContext) || {};
-    let [ guessApproved, setGuessApproved ] = useState(false);
+    const account = accounts?.length > 0 ? accounts[0] : {};
 
-    const account = accounts.length > 0 ? accounts[0] : {};
+    let [ guessApproved, setGuessApproved ] = useState(false);
 
     const collect = async (index: number, clearSecretString: string) => {
         await signedContract.settle(index, clearSecretString);

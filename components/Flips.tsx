@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useContext, useState, memo } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
@@ -6,6 +6,7 @@ import Pagination from '@mui/material/Pagination';
 import FlipsProvider from '../context/FlipsContext';
 import GuessProvider from '../context/GuessContext';
 import SettleProvider from '../context/SettleContext';
+import { AccountsContext } from '../context/AccountContext';
 import {
     instantiateContract,
     signer,
@@ -14,6 +15,7 @@ import {
 } from '../lib/w3';
 import Flip from './Flip';
 import styles from '../styles/Flip.module.scss';
+import { FlipType } from '../interfaces';
 
 const pageSize = 6;
 
@@ -21,6 +23,10 @@ const flips = memo(() => {
     const flipsProvider = FlipsProvider();
     const guessProvider = GuessProvider();
     const settleProvider = SettleProvider();
+
+    let { accounts } = useContext(AccountsContext) || {}
+    const account = accounts?.length > 0 ? accounts[0] : {};
+
     const [ page, setPage ] = useState(1);
     const [ tab, setTab ] = React.useState(0);
 
@@ -60,6 +66,7 @@ const flips = memo(() => {
                         creator: event?.args?.creator,
                         index: event?.args?.index,
                         token: event?.args?.token,
+                        settled: false,
                         symbol,
                     },
                 });
@@ -78,7 +85,7 @@ const flips = memo(() => {
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
         if (events && events !== guessProvider.guesses) {
-            guessProvider.saveGuesses(events);
+            flipsProvider.saveGuesses(events);
         }
     };
 
@@ -89,7 +96,7 @@ const flips = memo(() => {
         const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
         if (events && events !== settleProvider.saveSettles) {
-            settleProvider.saveSettles(events);
+            flipsProvider.saveSettles(events);
         }
     };
 
@@ -111,20 +118,25 @@ const flips = memo(() => {
         }
     }, []);
 
-    let sortedFlips;
-    if (flipsProvider.flips && flipsProvider.flips.length > 0) {
-        let mapCounter = 0;
-        sortedFlips = flipsProvider.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber)
-        .flatMap((flip: any) => {
-            mapCounter += 1;
+    const sortedFlips = (condition: any) => {
+        let sortedFlips = [];
 
-            if (mapCounter > pageSize * page || mapCounter <= pageSize * (page - 1)) {
-                return [];
-            }
+        if (flipsProvider.flips && flipsProvider.flips.length > 0) {
+            let mapCounter = 0;
+            sortedFlips = flipsProvider.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber)
+            .flatMap((flip: any) => {
+                mapCounter += 1;
 
-            return [<Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />];
-        });
-    }
+                if (!condition(flip) || mapCounter > pageSize * page || mapCounter <= pageSize * (page - 1)) {
+                    return [];
+                }
+
+                return [<Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />];
+            });
+        }
+
+        return sortedFlips;
+    };
 
     const a11yProps = (index: number) => {
         return {
@@ -155,13 +167,30 @@ const flips = memo(() => {
                         </Box>
                         <div className={ styles.flipTabContainer }>
                             <div hidden={ tab !== 0 }>
-                                { sortedFlips }
+                                { sortedFlips((flip: FlipType) => {
+                                    if (flip.args.guesser) {
+                                        return false;
+                                    }
+
+                                    return true;
+                                }) }
                             </div>
                             <div hidden={ tab !== 1 }>
-                                All
+                                {
+                                    //@ts-ignore
+                                    sortedFlips((flip: FlipType) => {
+                                        return true;
+                                    })
+                                }
                             </div>
                             <div hidden={ tab !== 2 }>
-                                Yours
+                                { sortedFlips((flip: FlipType) => {
+                                    if (flip.args.guesser !== account?.address && flip.args.creator !== account?.address) {
+                                        return false;
+                                    }
+
+                                    return true;
+                                }) }
                             </div>
                             <div hidden={ tab !== 3 }>
                                 Guessed
