@@ -118,24 +118,34 @@ const flips = memo(() => {
         }
     }, []);
 
-    const sortedFlips = (condition: any) => {
-        let sortedFlips = [];
+    const sortedFlips = (condition: (flip: FlipType) => boolean) => {
+        const flipsInfo = {
+            flips: [],
+            flipsLength: 0,
+        };
 
         if (flipsProvider.flips && flipsProvider.flips.length > 0) {
+            const filteredFlips = flipsProvider.flips
+                .filter((flip: FlipType) => {
+                    return condition(flip);
+                });
+
+            flipsInfo.flipsLength = filteredFlips.length;
+
             let mapCounter = 0;
-            sortedFlips = flipsProvider.flips.sort((a: any, b: any) => a.blockNumber < b.blockNumber)
-            .flatMap((flip: any) => {
-                mapCounter += 1;
+            flipsInfo.flips = filteredFlips.sort((a: FlipType, b: FlipType) => a.blockNumber < b.blockNumber)
+                .flatMap((flip: FlipType) => {
+                    mapCounter += 1;
 
-                if (!condition(flip) || mapCounter > pageSize * page || mapCounter <= pageSize * (page - 1)) {
-                    return [];
-                }
+                    if (mapCounter > pageSize * page || mapCounter <= pageSize * (page - 1)) {
+                        return [];
+                    }
 
-                return [<Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />];
-            });
+                    return [<Flip flip={ flip } guesses={ guessProvider.guesses } settles={ settleProvider.settles } />];
+                });
         }
 
-        return sortedFlips;
+        return flipsInfo;
     };
 
     const a11yProps = (index: number) => {
@@ -150,10 +160,44 @@ const flips = memo(() => {
         setTab(newValue);
     };
 
+    const openFlips = sortedFlips((flip: FlipType) => {
+        if (flip.args.guesser) {
+            return false;
+        }
+
+        return true;
+    });
+
+    // @ts-ignore
+    const allFlips = sortedFlips((flip: FlipType) => {
+        return true;
+    });
+
+    const myFlips = sortedFlips((flip: FlipType) => {
+        if (flip.args.guesser !== account?.address && flip.args.creator !== account?.address) {
+            return false;
+        }
+
+        return true;
+    });
+
+    const guessedFlips = sortedFlips((flip: FlipType) => {
+        return Boolean(flip.args.guesser);
+    });
+
+    const expiredFlips = sortedFlips((flip: FlipType) => {
+        // TODO
+        return false;
+    });
+
+    const settledFlips = sortedFlips((flip: FlipType) => {
+        return Boolean(flip.args.settler);
+    });
+
     return (
         <>
             {
-                flipsProvider.flips
+                flipsProvider.flips && flipsProvider.flips.length > 0
                     ? <>
                         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                             <Tabs value={ tab } onChange={ handleChange }>
@@ -167,48 +211,78 @@ const flips = memo(() => {
                         </Box>
                         <div className={ styles.flipTabContainer }>
                             <div hidden={ tab !== 0 }>
-                                { sortedFlips((flip: FlipType) => {
-                                    if (flip.args.guesser) {
-                                        return false;
-                                    }
-
-                                    return true;
-                                }) }
+                                { openFlips?.flips && openFlips.flips.length > 0 ? <>
+                                    { openFlips.flips }
+                                    <Pagination
+                                        count={ Math.ceil(openFlips.flipsLength / pageSize) }
+                                        page={ page }
+                                        onChange={ changePage }
+                                        color="primary"
+                                        defaultPage={ 1 }
+                                    />
+                                </> : <p>There are no open flips.</p> }
                             </div>
                             <div hidden={ tab !== 1 }>
-                                {
-                                    //@ts-ignore
-                                    sortedFlips((flip: FlipType) => {
-                                        return true;
-                                    })
-                                }
+                                { allFlips?.flips &&  <>
+                                    { allFlips.flips }
+                                    <Pagination
+                                        count={ Math.ceil(allFlips.flipsLength / pageSize) }
+                                        page={ page }
+                                        onChange={ changePage }
+                                        color="primary"
+                                        defaultPage={ 1 }
+                                    />
+                                </> }
                             </div>
                             <div hidden={ tab !== 2 }>
-                                { sortedFlips((flip: FlipType) => {
-                                    if (flip.args.guesser !== account?.address && flip.args.creator !== account?.address) {
-                                        return false;
-                                    }
-
-                                    return true;
-                                }) }
+                                { myFlips?.flips && myFlips.flips.length > 0 ? <>
+                                    { myFlips.flips }
+                                    <Pagination
+                                        count={ Math.ceil(myFlips.flipsLength / pageSize) }
+                                        page={ page }
+                                        onChange={ changePage }
+                                        color="primary"
+                                        defaultPage={ 1 }
+                                    />
+                                </> : <p>Have have made no flips.</p> }
                             </div>
                             <div hidden={ tab !== 3 }>
-                                Guessed
+                                { guessedFlips?.flips && guessedFlips.flips.length > 0 ? <>
+                                    { guessedFlips.flips }
+                                    <Pagination
+                                        count={ Math.ceil(guessedFlips.flipsLength / pageSize) }
+                                        page={ page }
+                                        onChange={ changePage }
+                                        color="primary"
+                                        defaultPage={ 1 }
+                                    />
+                                </> : <p>There are no flips with guesses.</p> }
                             </div>
                             <div hidden={ tab !== 4 }>
-                                Expired
+                                { expiredFlips?.flips && expiredFlips.flips.length ? <>
+                                    { expiredFlips.flips }
+                                    <Pagination
+                                        count={ Math.ceil(expiredFlips.flipsLength / pageSize) }
+                                        page={ page }
+                                        onChange={ changePage }
+                                        color="primary"
+                                        defaultPage={ 1 }
+                                    />
+                                </> : <p>There are no expired flips.</p> }
                             </div>
                             <div hidden={ tab !== 5 }>
-                                Settled
+                                { settledFlips?.flips && settledFlips.flips.length ? <>
+                                    { settledFlips.flips }
+                                    <Pagination
+                                        count={ Math.ceil(settledFlips.flipsLength / pageSize) }
+                                        page={ page }
+                                        onChange={ changePage }
+                                        color="primary"
+                                        defaultPage={ 1 }
+                                    />
+                                </> : <p>There are no settled flips.</p> }
                             </div>
                         </div>
-                        <Pagination
-                            count={ Math.ceil(flipsProvider.flips.length / pageSize) }
-                            page={ page }
-                            onChange={ changePage }
-                            color="primary"
-                            defaultPage={ 1 }
-                        />
                     </>
                     : <p>There are no flips yet...</p>
             }
