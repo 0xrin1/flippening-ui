@@ -27,24 +27,18 @@ const flips = memo(() => {
     const [ page, setPage ] = useState(1);
     const [ tab, setTab ] = React.useState(0);
 
-    const getEvents = async () => {
-        await getCreatedEvents();
-        await getGuessedEvents();
-        await getSettledEvents();
-    };
-
     // @ts-ignore
     const changePage = (event: any, val: any) => {
         setPage(val);
-    }
+    };
 
-    const getCreatedEvents = async () => {
+    const getEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Created();
         // TODO: Only subtract 5000 when BSC chain because it sucks
         let events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
 
-        let newEvents = [];
+        let newEvents: FlipType[] = [];
 
         for (let event of events) {
             if (event.args) {
@@ -63,56 +57,77 @@ const flips = memo(() => {
                         creator: event?.args?.creator,
                         index: BigNumber.from(event?.args?.index).toNumber(),
                         token: event?.args?.token,
-                        settled: false,
                         symbol,
                     },
                 });
             }
         }
 
-        if (newEvents && newEvents !== flipsProvider.flips) {
-            flipsProvider.saveFlips(newEvents);
+        const guessedEvents = await getGuessedEvents();
+        const settledEvents = await getSettledEvents();
+
+        let updatedEvents = newEvents.map(flip => {
+            guessedEvents.forEach(guess => {
+                const guessIndex = BigNumber.from(guess?.args?.index).toNumber();
+                const flipIndex = BigNumber.from(flip.args.index).toNumber();
+                if (flipIndex !== guessIndex) {
+                    return flip;
+                }
+
+                flip.args.guesser = guess?.args?.guesser;
+                flip.args.guess = guess?.args?.guess;
+            });
+
+            settledEvents.forEach(settle => {
+                const settleIndex = BigNumber.from(settle?.args?.index).toNumber();
+                const flipIndex = BigNumber.from(flip.args.index).toNumber();
+                if (flipIndex !== settleIndex) {
+                    return flip;
+                }
+
+                flip.args.settler = settle?.args?.settler;
+            });
+
+            return flip;
+        });
+
+        if (newEvents && updatedEvents !== flipsProvider.flips) {
+            await flipsProvider.saveFlips(updatedEvents);
         }
+
+        return;
     };
 
     const getGuessedEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Guess();
         // TODO: Only subtract 5000 when BSC chain because it sucks
-        const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
-
-        if (events && flipsProvider.flips) {
-            flipsProvider.saveGuesses(events);
-        }
+        return signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
     };
 
     const getSettledEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Settled();
         // TODO: Only subtract 5000 when BSC chain because it sucks
-        const events = await signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
-
-        if (events && flipsProvider.flips) {
-            flipsProvider.saveSettles(events);
-        }
+        return signedContract.queryFilter(eventFilter, currentBlock - 5000, currentBlock);
     };
 
     useEffect(() => {
-        getEvents();
-
         if (signedContract) {
             signedContract.on('Guess', () => {
-                getGuessedEvents();
+                getEvents();
             });
 
             signedContract.on('Created', () => {
-                getCreatedEvents();
+                getEvents();
             });
 
             signedContract.on('Settled', () => {
-                getSettledEvents();
+                getEvents();
             });
         }
+
+        getEvents();
     }, []);
 
     const sortedFlips = (condition: (flip: FlipType) => boolean) => {

@@ -34,10 +34,10 @@ export type SettleType = {
 };
 
 export type FlipType = {
-    blockNumber: string,
+    blockNumber: number,
     blockHash: string;
     transactionHash: string;
-    address: number;
+    address: string;
     args: {
         amount: number,
         creator: string,

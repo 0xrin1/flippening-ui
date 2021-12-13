@@ -21,11 +21,13 @@ export const FlipsContext = createContext<FlipsContextData | undefined>(flipsCon
 const FlipsProvider: () => FlipsContextData = () => {
     const [flips, setFlips] = useState<FlipType[] | null>(null);
 
-    const saveFlips = useCallback((newFlips: FlipType[]) => {
+    const saveFlips = useCallback(async (newFlips: FlipType[]) => {
+        console.log('saveFlips', flips?.length);
         setFlips([...newFlips]);
     }, [setFlips]);
 
-    const saveSettles = useCallback((newSettles: SettleType[]) => {
+    const saveSettles = useCallback(async (newSettles: SettleType[]) => {
+        console.log('saveSettles', flips?.length);
         if (flips) {
             const newFlips = flips.map(flip => {
                 newSettles.forEach(settle => {
@@ -46,7 +48,8 @@ const FlipsProvider: () => FlipsContextData = () => {
         }
     }, [flips, saveFlips]);
 
-    const saveGuesses = useCallback((newGuesses: GuessType[]) => {
+    const saveGuesses = useCallback(async (newGuesses: GuessType[]) => {
+        console.log('saveGuesses', flips?.length);
         if (flips) {
             const newFlips = flips.map(flip => {
                 newGuesses.forEach(guess => {
