@@ -35,7 +35,7 @@ const flips = memo(() => {
     const getEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Created();
-        let events = await signedContract.queryFilter(eventFilter, currentBlock, currentBlock);
+        let events = await signedContract.queryFilter(eventFilter, 0, currentBlock);
 
         let newEvents: FlipType[] = [];
 
@@ -100,13 +100,13 @@ const flips = memo(() => {
     const getGuessedEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Guess();
-        return signedContract.queryFilter(eventFilter, currentBlock, currentBlock);
+        return signedContract.queryFilter(eventFilter, 0, currentBlock);
     };
 
     const getSettledEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Settled();
-        return signedContract.queryFilter(eventFilter, currentBlock, currentBlock);
+        return signedContract.queryFilter(eventFilter, 0, currentBlock);
     };
 
     useEffect(() => {
