@@ -138,7 +138,7 @@ const flip = memo(({
                         { flip?.args.guesser }
                     </div>
                 </div> }
-                { matchedSecret?.secretValue && <div>
+                { (matchedSecret?.secretValue === true || matchedSecret?.secretValue === false) && <div>
                     <p className="mb-2 fw-bolder">secret</p>
                     <div className="mb-3">
                         { JSON.stringify(matchedSecret.secretValue) }
