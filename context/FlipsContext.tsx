@@ -28,10 +28,19 @@ const FlipsProvider: () => FlipsContextData = () => {
     const saveSettles = useCallback((newSettles: SettleType[]) => {
         if (flips) {
             newSettles.forEach(settle => {
-                const index = BigNumber.from(settle.args.index).toNumber();
-                const updatedFlips = flips;
-                updatedFlips[index].args.settler = settle.args.settler;
-                saveFlips([...updatedFlips]);
+                const newFlips = flips.map(flip => {
+                    const settleIndex = BigNumber.from(settle.args.index).toNumber();
+                    const flipIndex = BigNumber.from(flip.args.index).toNumber();
+                    if (flipIndex !== settleIndex) {
+                        return flip;
+                    }
+
+                    flip.args.settler = settle.args.settler;
+
+                    return flip;
+                });
+
+                saveFlips([...newFlips]);
             });
         }
     }, [flips, saveFlips]);
@@ -39,11 +48,20 @@ const FlipsProvider: () => FlipsContextData = () => {
     const saveGuesses = useCallback((newGuesses: GuessType[]) => {
         if (flips) {
             newGuesses.forEach(guess => {
-                const index = BigNumber.from(guess.args.index).toNumber();
-                const updatedFlips = flips;
-                updatedFlips[index].args.guesser = guess.args.guesser;
-                updatedFlips[index].args.guess = guess.args.guess;
-                saveFlips([...updatedFlips]);
+                const newFlips = flips.map(flip => {
+                    const guessIndex = BigNumber.from(guess.args.index).toNumber();
+                    const flipIndex = BigNumber.from(flip.args.index).toNumber();
+                    if (flipIndex !== guessIndex) {
+                        return flip;
+                    }
+
+                    flip.args.guesser = guess.args.guesser;
+                    flip.args.guess = guess.args.guess;
+
+                    return flip;
+                });
+
+                saveFlips([...newFlips]);
             });
         }
     }, [flips, saveFlips]);

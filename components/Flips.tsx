@@ -13,6 +13,7 @@ import {
     signedContract,
     provider,
 } from '../lib/w3';
+import { BigNumber } from 'ethers';
 import Flip from './Flip';
 import styles from '../styles/Flip.module.scss';
 import { FlipType } from '../interfaces';
@@ -64,7 +65,7 @@ const flips = memo(() => {
                     args: {
                         amount: event?.args?.amount,
                         creator: event?.args?.creator,
-                        index: event?.args?.index,
+                        index: BigNumber.from(event?.args?.index).toNumber(),
                         token: event?.args?.token,
                         settled: false,
                         symbol,
