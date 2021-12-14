@@ -8,18 +8,27 @@ import Button from '@mui/material/Button';
 import { Card } from '@mui/material';
 import { AccountsContext } from '../context/AccountContext';
 import { utils, Contract } from 'ethers';
-import { signedContract, approve, signer, defaultTokenAddress, flippeningAddress } from '../lib/w3';
+import {
+    signedContract,
+    approve,
+    signer,
+    defaultTokenAddress,
+    flippeningAddress,
+    checkAllowance,
+} from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import styles from '../styles/FlipForm.module.scss';
 import tokenABI from '../lib/tokenABI';
 
 export default function FlipForm() {
     let { accounts } = useContext(AccountsContext) || {};
+    const account = accounts?.length > 0 ? accounts[0] : {};
 
     let [ network, setNetwork ] = useState('bsc-test');
     let [ range, setRange ] = useState(10);
     let [ token, setToken ] = useState(defaultTokenAddress);
     let [ loading, setLoading ] = useState(false);
+    let [ allowance, setAllowance ] = useState(0);
 
     let [ approved, setApproved ] = useState(false);
 
@@ -31,12 +40,15 @@ export default function FlipForm() {
             });
         }
 
-        if (signer) {
-            if (signer._isSigner) {
-                setApproved(true);
-            }
+        if (token && account?.address) {
+            loadAllowance(account.address, token);
         }
     }, []);
+
+    const loadAllowance = async (accountAddress: string, tokenAddress: string) => {
+        const allowance = await checkAllowance(accountAddress, tokenAddress);
+        setAllowance(allowance);
+    };
 
     const onChangeRange = (event: any): void => {
         setRange(parseInt(event.target.value));
