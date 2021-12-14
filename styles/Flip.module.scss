@@ -7,9 +7,12 @@
 }
 
 .accordionHeader {
-    display: flex;
-    justify-content: space-between;
     width: 100%;
+}
+
+.accordionHeaderCell {
+    // display: table-cell;
+    // justify-content: space-between;
 }
 
 .flipRow {

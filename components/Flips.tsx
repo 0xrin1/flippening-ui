@@ -225,7 +225,7 @@ const flips = memo(() => {
                             </Tabs>
                         </Box>
                         <div className={ styles.flipTabContainer }>
-                            <div hidden={ tab !== 0 }>
+                            <div hidden={ tab !== 0 } className={ styles.flipTabElement }>
                                 { openFlips?.flips && openFlips.flips.length > 0 ? <>
                                     { openFlips.flips }
                                     <Pagination

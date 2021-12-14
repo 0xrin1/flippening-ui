@@ -12,6 +12,9 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import formStyles from '../styles/FlipForm.module.scss';
+import Row from 'react-bootstrap/esm/Row';
+import Col from 'react-bootstrap/esm/Col';
+import { Container } from 'react-bootstrap';
 
 type PropTypes = {
     flip: FlipType,
@@ -119,11 +122,22 @@ const flip = memo(({
                 aria-controls="panel1a-content"
                 id="panel1a-header"
             >
-                <div className={ styles.accordionHeader }>
-                    <Typography>{ amount } { symbol }</Typography>
-                    <Typography>{ matchedSecret && flip?.args?.guess ? (won ? 'won' : 'lost') : '' }</Typography>
-                    <Typography>{ yours ? 'mine' : '' }</Typography>
-                </div>
+                <Container className={ styles.accordionHeader }>
+                    <Row>
+                        <Col md="3">
+                            <Typography className={ styles.accordionHeaderCell }>#{ flip.blockNumber }</Typography>
+                        </Col>
+                        <Col md="3">
+                            <Typography className={ styles.accordionHeaderCell }>{ amount } { symbol }</Typography>
+                        </Col>
+                        <Col md="3">
+                            <Typography className={ styles.accordionHeaderCell }>{ matchedSecret && flip?.args?.guess ? (won ? 'won' : 'lost') : '' }</Typography>
+                        </Col>
+                        <Col md="3">
+                            <Typography className={ styles.accordionHeaderCell }>{ yours ? 'mine' : '' }</Typography>
+                        </Col>
+                    </Row>
+                </Container>
             </AccordionSummary>
             <AccordionDetails>
                 <div>
