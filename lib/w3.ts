@@ -96,5 +96,5 @@ export const checkAllowance = async (userAddress: string, token: string): Promis
     const tokenContract = new Contract(token, tokenABI);
     const signedTokenContract = tokenContract.connect(signer);
     const allowance = await signedTokenContract.allowance(userAddress, flippeningAddress);
-    return BigNumber.from(allowance).toNumber();
+    return parseInt(allowance.toString());
 };
