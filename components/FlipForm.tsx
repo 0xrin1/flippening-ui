@@ -30,6 +30,12 @@ export default function FlipForm() {
                 setApproved(false);
             });
         }
+
+        if (signer) {
+            if (signer._isSigner) {
+                setApproved(true);
+            }
+        }
     }, []);
 
     const onChangeRange = (event: any): void => {

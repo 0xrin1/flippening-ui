@@ -110,7 +110,10 @@ const flips = memo(() => {
             });
         }
 
-        getEvents();
+        // Check if the provider has been setup as required in function
+        if (provider) {
+            getEvents();
+        }
     }, []);
 
     return <TabbedFlips flips={ flipsProvider.flips } account={ account } />;
