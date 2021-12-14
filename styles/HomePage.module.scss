@@ -1,3 +1,29 @@
 .main {
     padding-top: 8%;
 }
+
+.heroContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.heroContainer:before {
+    width: 100%;
+    height: 100%;
+    content: ' ';
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: url("/flip-coin.png");
+    background-position: 50% 0;
+    background-size: 225px 300px;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply;
+    opacity: 25%;
+}
+
+.heroContainerContent {
+    position: relative;
+}

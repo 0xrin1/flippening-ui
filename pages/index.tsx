@@ -1,8 +1,8 @@
 import Container from 'react-bootstrap/Container';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import styles from '../styles/HomePage.module.scss';
 
+// import Image from 'next/image';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
@@ -12,23 +12,31 @@ import FlipForm from '../components/FlipForm';
 import Flips from '../components/Flips';
 import AccountsProvider, { AccountsContext } from '../context/AccountContext';
 
+import styles from '../styles/HomePage.module.scss';
+
 const HomePage = () => {
     const accountsProvider = AccountsProvider();
 
-     return <>
+    // const HeroImage = () => {
+    //     return <Image src="/flip-coin.png" width="250px" height="350px" />;
+    // };
+
+    return <>
         <AccountsContext.Provider value={ accountsProvider }>
             <Layout title="Flippening"></Layout>
             <Header></Header>
             <div className="main">
                 <Container>
                     <Row className="mb-5">
-                        <Col md="6">
+                        <Col md="7">
+                            <FlipForm></FlipForm>
+                        </Col>
+                        <Col md="5">
                             <h2>How it works?</h2>
 
-                            <p>Select a pool, bet an amount and flip the coin.<br />If you win you get double back.<br />Easy peasy :)</p>
-                        </Col>
-                        <Col md="6">
-                            <FlipForm></FlipForm>
+                            <div className={ styles.heroContainer }>
+                                <p className={ styles.heroContainerContent }>Select a pool, bet an amount and flip the coin.<br />If you win you get double back.<br />Easy peasy :)</p>
+                            </div>
                         </Col>
                     </Row>
                     <Row>
