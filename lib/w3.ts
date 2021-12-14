@@ -1,7 +1,13 @@
 import { addresses, getChainFromId } from './addresses';
 import tokenABI from './tokenABI';
 import flippeningABI from './flippeningABI';
-import { ethers, Contract, providers, Signer } from 'ethers';
+import {
+    ethers,
+    Contract,
+    providers,
+    Signer,
+    BigNumber,
+} from 'ethers';
 
 const determineFlippeningAddress = () => {
     if (process.env.NODE_ENV === 'production') {
@@ -84,4 +90,11 @@ export const approve = async (
     } catch(e) {
         console.log('e', e);
     }
+};
+
+export const checkAllowance = async (userAddress: string, token: string): Promise<number> => {
+    const tokenContract = new Contract(token, tokenABI);
+    const signedTokenContract = tokenContract.connect(signer);
+    const allowance = await signedTokenContract.allowance(userAddress, flippeningAddress);
+    return BigNumber.from(allowance).toNumber();
 };
