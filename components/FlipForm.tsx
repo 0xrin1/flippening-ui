@@ -11,6 +11,7 @@ import { utils, Contract } from 'ethers';
 import { signedContract, approve, signer, defaultTokenAddress, flippeningAddress } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import tokenABI from '../lib/tokenABI';
+import {Card} from '@mui/material';
 
 export default function FlipForm() {
     let { accounts } = useContext(AccountsContext) || {};
@@ -127,42 +128,44 @@ export default function FlipForm() {
         <AccountsContext.Consumer>
             {
                 accountsContext => (
-                    <Container>
-                        <Form onSubmit={ onSubmit }>
-                            <FloatingLabel controlId="floatingSelect" label="Select network">
-                                <Form.Select onChange={onChangeNetwork} value={network}>
-                                    <option value="bsc-test">Avalanche Testnet</option>
-                                    <option disabled value="eth">Ethereum</option>
-                                </Form.Select>
-                            </FloatingLabel>
+                    <Card variant="elevation">
+                        <Container className="mb-4 mt-4">
+                            <Form onSubmit={ onSubmit }>
+                                <FloatingLabel controlId="floatingSelect" label="Select network">
+                                    <Form.Select onChange={onChangeNetwork} value={network}>
+                                        <option value="bsc-test">Avalanche Testnet</option>
+                                        <option disabled value="eth">Ethereum</option>
+                                    </Form.Select>
+                                </FloatingLabel>
 
-                            <Form.Group className="mb-3" controlId="token">
-                                <Form.Label>Token address</Form.Label>
-                                <Form.Control value={token} onChange={onChangeToken} type="text" placeholder="Enter token" />
-                                <Form.Text className="text-muted"></Form.Text>
-                            </Form.Group>
+                                <Form.Group className="mb-3" controlId="token">
+                                    <Form.Label>Token address</Form.Label>
+                                    <Form.Control value={token} onChange={onChangeToken} type="text" placeholder="Enter token" />
+                                    <Form.Text className="text-muted"></Form.Text>
+                                </Form.Group>
 
-                            <ButtonGroup>
-                                <BSButton onClick={() => setRange(10)} variant="outline-primary">0.1</BSButton>
-                                <BSButton onClick={() => setRange(50)} variant="outline-primary">0.5</BSButton>
-                                <BSButton onClick={() => setRange(70)} variant="outline-primary">0.7</BSButton>
-                                <BSButton onClick={() => setRange(100)} variant="outline-primary">1</BSButton>
-                            </ButtonGroup>
+                                <ButtonGroup>
+                                    <BSButton onClick={() => setRange(10)} variant="outline-primary">0.1</BSButton>
+                                    <BSButton onClick={() => setRange(50)} variant="outline-primary">0.5</BSButton>
+                                    <BSButton onClick={() => setRange(70)} variant="outline-primary">0.7</BSButton>
+                                    <BSButton onClick={() => setRange(100)} variant="outline-primary">1</BSButton>
+                                </ButtonGroup>
 
-                            <Form.Range onChange={onChangeRange} value={range} min="0" max="100" id="flip-range" />
+                                <Form.Range onChange={onChangeRange} value={range} min="0" max="100" id="flip-range" />
 
-                            <p>Flip: {range / 100}</p>
+                                <p>Flip: {range / 100}</p>
 
-                            <>
-                                {
-                                    accountsContext && !accountsContext.accounts &&
-                                    <p>Connect before flipping!</p>
-                                }
-                            </>
+                                <>
+                                    {
+                                        accountsContext && !accountsContext.accounts &&
+                                        <p>Connect before flipping!</p>
+                                    }
+                                </>
 
-                            <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ approved ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
-                        </Form>
-                    </Container>
+                                <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ approved ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                            </Form>
+                        </Container>
+                    </Card>
                 )
             }
         </AccountsContext.Consumer>
