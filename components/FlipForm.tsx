@@ -30,13 +30,11 @@ export default function FlipForm() {
     let [ loading, setLoading ] = useState(false);
     let [ allowance, setAllowance ] = useState(0);
 
-    let [ approved, setApproved ] = useState(false);
-
     useEffect(() => {
         if (signedContract) {
             signedContract.on('Created', () => {
                 setLoading(false);
-                setApproved(false);
+                loadAllowance(account.address, token);
             });
         }
 
@@ -46,8 +44,8 @@ export default function FlipForm() {
     }, []);
 
     const loadAllowance = async (accountAddress: string, tokenAddress: string) => {
-        const allowance = await checkAllowance(accountAddress, tokenAddress);
-        setAllowance(allowance);
+        const response = await checkAllowance(accountAddress, tokenAddress);
+        setAllowance(response);
     };
 
     const onChangeRange = (event: any): void => {
@@ -60,6 +58,10 @@ export default function FlipForm() {
 
     const onChangeToken = (event: any): void => {
         setToken(event.target.value);
+
+        if (token && account?.address) {
+            loadAllowance(account.address, event.target.value);
+        }
     };
 
     const parseSecrets = (secretObject: any, secrets?: any) => {
@@ -106,6 +108,9 @@ export default function FlipForm() {
         }
     }
 
+    const adjustedRange = range / 100;
+    const amount = utils.parseEther(adjustedRange.toString()).toString();
+
     const onSubmit = async (event: any): Promise<void> => {
         event.preventDefault();
 
@@ -114,15 +119,13 @@ export default function FlipForm() {
         const tokenContract = new Contract(token, tokenABI);
         const signedTokenContract = tokenContract.connect(signer);
 
-        const adjustedRange = range / 100;
-
-        if (!approved) {
+        if (allowance < parseInt(amount)) {
             if (signedContract) {
                 signedTokenContract.on('Approval', async (owner: any, spender: any) => {
                     // Could interfere with other contracts?
                     if (owner === accounts[0]?.address && spender === flippeningAddress) {
-                        setApproved(true);
                         setLoading(false);
+                        loadAllowance(account.address, token);
                     }
                 });
             }
@@ -139,7 +142,7 @@ export default function FlipForm() {
 
         console.log(`Make to store your secret so you can redeem the pot if you win: ${secret} ${secretValue}}`);
 
-        await createFlip(hashedSecret, clearSecret, secretValue, token, utils.parseEther(adjustedRange.toString()).toString());
+        await createFlip(hashedSecret, clearSecret, secretValue, token, amount);
     }
 
     return <div>
@@ -180,7 +183,7 @@ export default function FlipForm() {
                                         }
                                     </>
 
-                                    <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ approved ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                                    <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance > parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
                                 </Form>
                             </Container>
                         </Card>
