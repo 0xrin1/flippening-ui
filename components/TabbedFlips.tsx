@@ -99,7 +99,7 @@ const tabbedFlips = memo(({
     });
 
     const expiredFlips = sortedFlips((flip: FlipType) => {
-        return isExpired(timeUntilExpiration(flip));
+        return isExpired(timeUntilExpiration(flip)) && ! flip?.args?.settler;
     });
 
     const settledFlips = sortedFlips((flip: FlipType) => {

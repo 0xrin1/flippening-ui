@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import formStyles from '../styles/FlipForm.module.scss';
 import { Container, Row, Col } from 'react-bootstrap';
+import {isExpired, timeUntilExpiration} from '../lib/time';
 
 type PropTypes = {
     flip: FlipType,
@@ -29,6 +30,10 @@ const flip = memo(({
 
     const collect = async (index: number, clearSecretString: string) => {
         await signedContract.settle(index, clearSecretString);
+    };
+
+    const expire = async (index: number) => {
+        await signedContract.expire(index);
     };
 
     const guess = async (flip: any) => {
@@ -69,10 +74,6 @@ const flip = memo(({
         let win = <></>;
 
         if (matchedSecret && flip?.args?.guess && JSON.stringify(matchedSecret.secretValue) !== flip?.args?.guess) {
-            const collectClick = () => {
-                collect(BigNumber.from(flip?.args?.index).toNumber(), matchedSecret.secret);
-            };
-
             win = <div>
                 <Button
                     className={ formStyles.submitButton }
@@ -109,6 +110,14 @@ const flip = memo(({
     const yours: boolean = account.address === flip?.args?.creator;
     const yourGuess: boolean = account.address === flip?.args?.guesser;
     const symbol = flip?.args?.symbol;
+
+    const collectClick = () => {
+        collect(BigNumber.from(flip?.args?.index).toNumber(), matchedSecret.secret);
+    };
+
+    const expireClick = () => {
+        expire(BigNumber.from(flip?.args?.index).toNumber());
+    };
 
     const guessClick = () => {
         guess(flip);
@@ -165,16 +174,57 @@ const flip = memo(({
                     <div className="mb-3">
                         { flip?.args.guess }
                     </div>
+                    {
+                        flip?.args?.guesser
+                            && flip?.args?.guesser === account?.address
+                            && ! flip?.args?.settler
+                            && <Button
+                                className={ formStyles.submitButton }
+                                variant="contained"
+                                color="success"
+                                onClick={ collectClick }
+                            >
+                                collect
+                            </Button>
+                    }
+                    {
+                        ! flip?.args?.guesser && isExpired(timeUntilExpiration(flip))
+                            && flip?.args?.guesser === account?.address
+                            && ! flip?.args?.settler
+                            && <Button
+                                className={ formStyles.submitButton }
+                                variant="contained"
+                                color="success"
+                                onClick={ expireClick }
+                            >
+                                settle
+                            </Button>
+                    }
                 </div> : <div>
                     <div className="mb-3">
-                        <Button
-                            className={ formStyles.submitButton }
-                            variant="contained"
-                            color="warning"
-                            onClick={ guessClick }
-                        >
-                            { guessApproved ? 'submit guess' : 'approve to guess' }
-                        </Button>
+                        {
+                            ! flip?.args?.guess && ! isExpired(timeUntilExpiration(flip))
+                                && <Button
+                                    className={ formStyles.submitButton }
+                                    variant="contained"
+                                    color={ guessApproved ? 'success' : 'warning' }
+                                    onClick={ guessClick }
+                                >
+                                    { guessApproved ? 'submit guess' : 'approve to guess' }
+                                </Button>
+                        }
+                        {
+                            ! flip?.args?.guess && isExpired(timeUntilExpiration(flip))
+                            && ! flip?.args?.settler
+                                && <Button
+                                    className={ formStyles.submitButton }
+                                    variant="contained"
+                                    color="success"
+                                    onClick={ expireClick }
+                                >
+                                    settle
+                                </Button>
+                        }
                     </div>
                 </div> }
                 { winDisplay(matchedSecret) }
