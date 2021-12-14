@@ -275,7 +275,7 @@ const flips = memo(() => {
                             </div>
                             <div hidden={ tab !== 4 }>
                                 { retrievableFlips?.flips && retrievableFlips.flips.length ? <>
-                                    { expiredFlips.flips }
+                                    { retrievableFlips.flips }
                                     <Pagination
                                         count={ Math.ceil(retrievableFlips.flipsLength / pageSize) }
                                         page={ page }
