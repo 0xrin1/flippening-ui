@@ -213,7 +213,7 @@ const flips = memo(() => {
             {
                 flipsProvider.flips && flipsProvider.flips.length > 0
                     ? <>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }} className="mb-2">
                             <Tabs value={ tab } onChange={ handleChange }>
                                 <Tab label="Open" { ...a11yProps(0) } />
                                 <Tab label="All" { ...a11yProps(1) } />
@@ -224,7 +224,7 @@ const flips = memo(() => {
                                 <Tab label="Settled" { ...a11yProps(6) } />
                             </Tabs>
                         </Box>
-                        <div className={ styles.flipTabContainer }>
+                        <div>
                             <div hidden={ tab !== 0 } className={ styles.flipTabElement }>
                                 { PaginatedFlips({
                                     pageSize,

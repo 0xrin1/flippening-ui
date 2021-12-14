@@ -15,9 +15,11 @@ type Props = {
 };
 
 const paginatedFlips = (params: Props): ReactJSXElement => {
-    return <div>
+    return <>
         { params.flips?.flips && params.flips.flips.length > 0 ? <>
-            { params.flips.flips }
+            <div className="mb-2">
+                { params.flips.flips }
+            </div>
             <Pagination
                 count={ Math.ceil(params.flips.flipsLength / params.pageSize) }
                 page={ params.page }
@@ -26,7 +28,7 @@ const paginatedFlips = (params: Props): ReactJSXElement => {
                 defaultPage={ 1 }
             />
         </> : <p>{ params.noFlips }</p> }
-    </div>;
+    </>;
 };
 
 export default paginatedFlips;
