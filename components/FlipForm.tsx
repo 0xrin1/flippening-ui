@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import BSButton from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from '@mui/material/Button';
 import { Card } from '@mui/material';
+import { TravelExplore } from '@mui/icons-material';
 import { AccountsContext } from '../context/AccountContext';
 import { utils, Contract } from 'ethers';
 import { signedContract, approve, signer, defaultTokenAddress, flippeningAddress } from '../lib/w3';
@@ -94,6 +96,15 @@ export default function FlipForm() {
         }
     }
 
+    const onClickTokenInfo = async (): Promise<void> => {
+        let url = 'https://testnet.bscscan.com/';
+
+        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+        if (newWindow) {
+            newWindow.opener = null;
+        }
+    }
+
     const onSubmit = async (event: any): Promise<void> => {
         event.preventDefault();
 
@@ -146,8 +157,12 @@ export default function FlipForm() {
 
                                     <Form.Group className="mb-3" controlId="token">
                                         <Form.Label>Token address</Form.Label>
-                                        <Form.Control value={ token } onChange={ onChangeToken } type="text" placeholder="Enter token" />
-                                        <Form.Text className="text-muted"></Form.Text>
+                                        <InputGroup className="mb-3">
+                                            <Form.Control value={ token } onChange={ onChangeToken } type="text" placeholder="Enter token" />
+                                            <Button color="secondary" onClick={ onClickTokenInfo }>
+                                                <TravelExplore></TravelExplore>
+                                            </Button>
+                                        </InputGroup>
                                     </Form.Group>
 
                                     <ButtonGroup>
