@@ -32,13 +32,15 @@ const HomePage = () => {
                             <FlipForm></FlipForm>
                         </Col>
                         <Col md="5">
-                            <h2>How it works?</h2>
+                            <h2>Flippening - The Degen Primitive</h2>
+
+                            <br />
+                            <br />
 
                             <div className={ styles.heroContainer }>
                                 <div className={ styles.heroContainerContent }>
-                                    <p>Select a token, bet an amount and flip the coin.</p>
-                                    <p>If you win you get double back.</p>
-                                    <p>Easy peasy :)</p>
+                                    <p>In a land of undue complexity, the Flippening was brewing. The battle of true versus false...</p>
+                                    <p>Are you man enough to put your sack where your mouth is? Just Flip It, and conquer your chains forever.</p>
                                 </div>
                             </div>
                         </Col>
