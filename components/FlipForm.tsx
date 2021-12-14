@@ -10,6 +10,7 @@ import { Card } from '@mui/material';
 import { TravelExplore } from '@mui/icons-material';
 import { AccountsContext } from '../context/AccountContext';
 import { utils, Contract } from 'ethers';
+import { getExplorerDomain } from '../lib/addresses';
 import { signedContract, approve, signer, defaultTokenAddress, flippeningAddress } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import styles from '../styles/FlipForm.module.scss';
@@ -97,7 +98,7 @@ export default function FlipForm() {
     }
 
     const onClickTokenInfo = async (): Promise<void> => {
-        let url = 'https://testnet.bscscan.com/';
+        const url = `https://${getExplorerDomain('bsc')}/address/${token}`;
 
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
         if (newWindow) {
@@ -159,7 +160,7 @@ export default function FlipForm() {
                                         <Form.Label>Token address</Form.Label>
                                         <InputGroup className="mb-3">
                                             <Form.Control value={ token } onChange={ onChangeToken } type="text" placeholder="Enter token" />
-                                            <Button color="secondary" onClick={ onClickTokenInfo }>
+                                            <Button color="secondary" title="View token info" onClick={ onClickTokenInfo }>
                                                 <TravelExplore></TravelExplore>
                                             </Button>
                                         </InputGroup>

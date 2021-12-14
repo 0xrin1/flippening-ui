@@ -13,6 +13,10 @@ const addresses: {[key: string]: string|any} = {
             testnet: '0x0000000000000000000000000000000000000000',
             mainnet: '0x0000000000000000000000000000000000000000',
             local: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+            explorer: {
+                testnet: 'ropsten.etherscan.io',
+                mainnet: 'etherscan.io'
+            }
         },
         arb: {
             symbol: 'AETH',
@@ -23,6 +27,10 @@ const addresses: {[key: string]: string|any} = {
             symbol: 'BNB',
             testnet: '0xa610A2D54cF77FFf7Eb721A49310C545992AC87c',
             mainnet: '0x0000000000000000000000000000000000000000',
+            explorer: {
+                testnet: 'testnet.bscscan.com',
+                mainnet: 'bscscan.com'
+            }
         },
         ava: {
             symbol: 'AVAX',
@@ -35,6 +43,10 @@ const addresses: {[key: string]: string|any} = {
             mainnet: '0x0000000000000000000000000000000000000000',
         },
     },
+};
+
+export const getExplorerDomain = (chain: string) => {
+    return addresses.flippening[chain].explorer.testnet;
 };
 
 export default addresses;
