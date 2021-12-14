@@ -2,7 +2,6 @@ import React, { useEffect, useContext, useState, memo } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Pagination from '@mui/material/Pagination';
 import FlipsProvider from '../context/FlipsContext';
 import { AccountsContext } from '../context/AccountContext';
 import {
@@ -13,6 +12,7 @@ import {
 } from '../lib/w3';
 import { BigNumber } from 'ethers';
 import Flip from './Flip';
+import PaginatedFlips from './PaginatedFlips';
 import styles from '../styles/Flip.module.scss';
 import { FlipType } from '../interfaces';
 import { isExpired, timeUntilExpiration, timeUntilRetrieval } from '../lib/time';
@@ -226,88 +226,67 @@ const flips = memo(() => {
                         </Box>
                         <div className={ styles.flipTabContainer }>
                             <div hidden={ tab !== 0 } className={ styles.flipTabElement }>
-                                { openFlips?.flips && openFlips.flips.length > 0 ? <>
-                                    { openFlips.flips }
-                                    <Pagination
-                                        count={ Math.ceil(openFlips.flipsLength / pageSize) }
-                                        page={ page }
-                                        onChange={ changePage }
-                                        color="primary"
-                                        defaultPage={ 1 }
-                                    />
-                                </> : <p>There are no open flips.</p> }
+                                { PaginatedFlips({
+                                    pageSize,
+                                    page,
+                                    changePage,
+                                    flips: openFlips,
+                                    noFlips: 'There are no open flips.',
+                                }) }
                             </div>
                             <div hidden={ tab !== 1 }>
-                                { allFlips?.flips &&  <>
-                                    { allFlips.flips }
-                                    <Pagination
-                                        count={ Math.ceil(allFlips.flipsLength / pageSize) }
-                                        page={ page }
-                                        onChange={ changePage }
-                                        color="primary"
-                                        defaultPage={ 1 }
-                                    />
-                                </> }
+                                { PaginatedFlips({
+                                    pageSize,
+                                    page,
+                                    changePage,
+                                    flips: allFlips,
+                                    noFlips: 'There are no flips',
+                                }) }
                             </div>
                             <div hidden={ tab !== 2 }>
-                                { myFlips?.flips && myFlips.flips.length > 0 ? <>
-                                    { myFlips.flips }
-                                    <Pagination
-                                        count={ Math.ceil(myFlips.flipsLength / pageSize) }
-                                        page={ page }
-                                        onChange={ changePage }
-                                        color="primary"
-                                        defaultPage={ 1 }
-                                    />
-                                </> : <p>Have have made no flips.</p> }
+                                { PaginatedFlips({
+                                    pageSize,
+                                    page,
+                                    changePage,
+                                    flips: myFlips,
+                                    noFlips: 'You have made no flips.',
+                                }) }
                             </div>
                             <div hidden={ tab !== 3 }>
-                                { guessedFlips?.flips && guessedFlips.flips.length > 0 ? <>
-                                    { guessedFlips.flips }
-                                    <Pagination
-                                        count={ Math.ceil(guessedFlips.flipsLength / pageSize) }
-                                        page={ page }
-                                        onChange={ changePage }
-                                        color="primary"
-                                        defaultPage={ 1 }
-                                    />
-                                </> : <p>There are no flips with guesses.</p> }
+                                { PaginatedFlips({
+                                    pageSize,
+                                    page,
+                                    changePage,
+                                    flips: guessedFlips,
+                                    noFlips: 'There are no filps with guesses.',
+                                }) }
                             </div>
                             <div hidden={ tab !== 4 }>
-                                { retrievableFlips?.flips && retrievableFlips.flips.length ? <>
-                                    { retrievableFlips.flips }
-                                    <Pagination
-                                        count={ Math.ceil(retrievableFlips.flipsLength / pageSize) }
-                                        page={ page }
-                                        onChange={ changePage }
-                                        color="primary"
-                                        defaultPage={ 1 }
-                                    />
-                                </> : <p>There are no flips that can be retrieved.</p> }
+                                { PaginatedFlips({
+                                    pageSize,
+                                    page,
+                                    changePage,
+                                    flips: retrievableFlips,
+                                    noFlips: 'There are no flips that can be retrieved.',
+                                }) }
                             </div>
                             <div hidden={ tab !== 5 }>
-                                { expiredFlips?.flips && expiredFlips.flips.length ? <>
-                                    { expiredFlips.flips }
-                                    <Pagination
-                                        count={ Math.ceil(expiredFlips.flipsLength / pageSize) }
-                                        page={ page }
-                                        onChange={ changePage }
-                                        color="primary"
-                                        defaultPage={ 1 }
-                                    />
-                                </> : <p>There are no expired flips.</p> }
+                                { PaginatedFlips({
+                                    pageSize,
+                                    page,
+                                    changePage,
+                                    flips: expiredFlips,
+                                    noFlips: 'There are no expired flips.',
+                                }) }
                             </div>
                             <div hidden={ tab !== 6 }>
-                                { settledFlips?.flips && settledFlips.flips.length ? <>
-                                    { settledFlips.flips }
-                                    <Pagination
-                                        count={ Math.ceil(settledFlips.flipsLength / pageSize) }
-                                        page={ page }
-                                        onChange={ changePage }
-                                        color="primary"
-                                        defaultPage={ 1 }
-                                    />
-                                </> : <p>There are no settled flips.</p> }
+                                { PaginatedFlips({
+                                    pageSize,
+                                    page,
+                                    changePage,
+                                    flips: settledFlips,
+                                    noFlips: 'There are no settled flips.',
+                                }) }
                             </div>
                         </div>
                     </>
