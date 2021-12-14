@@ -34,9 +34,6 @@ const HomePage = () => {
                         <Col md="5">
                             <h2>Flippening - The Degen Primitive</h2>
 
-                            <br />
-                            <br />
-
                             <div className={ styles.heroContainer }>
                                 <div className={ styles.heroContainerContent }>
                                     <p>In a land of undue complexity, the Flippening was brewing. The battle of true versus false...</p>
