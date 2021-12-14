@@ -107,6 +107,7 @@ const flip = memo(({
     const amount = utils.formatEther(BigNumber.from(flip.args.amount).toString()).toString();
     const won: boolean = hasWon(matchedSecret);
     const yours: boolean = account.address === flip?.args?.creator;
+    const yourGuess: boolean = account.address === flip?.args?.guesser;
     const symbol = flip?.args?.symbol;
 
     const guessClick = () => {
@@ -122,17 +123,20 @@ const flip = memo(({
             >
                 <Container className={ styles.accordionHeader }>
                     <Row>
-                        <Col md="3">
+                        <Col md="2">
                             <Typography>#{ flip.blockNumber }</Typography>
                         </Col>
-                        <Col md="3">
+                        <Col md="2">
                             <Typography>{ amount } { symbol }</Typography>
                         </Col>
-                        <Col md="3">
+                        <Col md="4">
                             <Typography>{ matchedSecret && flip?.args?.guess ? (won ? 'won' : 'lost') : '' }</Typography>
                         </Col>
-                        <Col md="3">
-                            <Typography>{ yours ? 'mine' : '' }</Typography>
+                        <Col md="2">
+                            <Typography>{ yours ? 'my flip' : '' }</Typography>
+                        </Col>
+                        <Col md="2">
+                            <Typography>{ yourGuess ? 'my guess' : '' }</Typography>
                         </Col>
                     </Row>
                 </Container>
