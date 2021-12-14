@@ -32,7 +32,7 @@ const HomePage = () => {
                             <FlipForm></FlipForm>
                         </Col>
                         <Col md="5">
-                            <h2>Flippening - The Degen Primitive</h2>
+                            <h2>The Degen Primitive</h2>
 
                             <div className={ styles.heroContainer }>
                                 <div className={ styles.heroContainerContent }>
