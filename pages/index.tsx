@@ -35,7 +35,11 @@ const HomePage = () => {
                             <h2>How it works?</h2>
 
                             <div className={ styles.heroContainer }>
-                                <p className={ styles.heroContainerContent }>Select a pool, bet an amount and flip the coin.<br />If you win you get double back.<br />Easy peasy :)</p>
+                                <div className={ styles.heroContainerContent }>
+                                    <p>Select a token, bet an amount and flip the coin.</p>
+                                    <p>If you win you get double back.</p>
+                                    <p>Easy peasy :)</p>
+                                </div>
                             </div>
                         </Col>
                     </Row>
