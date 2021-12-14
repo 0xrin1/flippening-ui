@@ -15,7 +15,7 @@ import { BigNumber } from 'ethers';
 import Flip from './Flip';
 import styles from '../styles/Flip.module.scss';
 import { FlipType } from '../interfaces';
-import { isExpired, timeUntilExpiration } from '../lib/time';
+import { isExpired, timeUntilExpiration, timeUntilRetrieval } from '../lib/time';
 
 const pageSize = 6;
 
@@ -172,7 +172,7 @@ const flips = memo(() => {
     };
 
     const openFlips = sortedFlips((flip: FlipType) => {
-        if (flip.args.guesser || isExpired(timeUntilExpiration(flip))) {
+        if (flip.args.guesser || isExpired(timeUntilExpiration(flip)) || isExpired(timeUntilRetrieval(flip))) {
             return false;
         }
 
@@ -196,6 +196,10 @@ const flips = memo(() => {
         return Boolean(flip.args.guesser);
     });
 
+    const retrievableFlips = sortedFlips((flip: FlipType) => {
+        return (isExpired(timeUntilRetrieval(flip))) && ! isExpired(timeUntilExpiration(flip));
+    });
+
     const expiredFlips = sortedFlips((flip: FlipType) => {
         return isExpired(timeUntilExpiration(flip));
     });
@@ -215,8 +219,9 @@ const flips = memo(() => {
                                 <Tab label="All" { ...a11yProps(1) } />
                                 <Tab label="Mine" { ...a11yProps(2) } />
                                 <Tab label="Guessed" { ...a11yProps(3) } />
-                                <Tab label="Expired" { ...a11yProps(4) } />
-                                <Tab label="Settled" { ...a11yProps(5) } />
+                                <Tab label="Retrievable" { ...a11yProps(4) } />
+                                <Tab label="Expired" { ...a11yProps(5) } />
+                                <Tab label="Settled" { ...a11yProps(6) } />
                             </Tabs>
                         </Box>
                         <div className={ styles.flipTabContainer }>
@@ -269,6 +274,18 @@ const flips = memo(() => {
                                 </> : <p>There are no flips with guesses.</p> }
                             </div>
                             <div hidden={ tab !== 4 }>
+                                { retrievableFlips?.flips && retrievableFlips.flips.length ? <>
+                                    { expiredFlips.flips }
+                                    <Pagination
+                                        count={ Math.ceil(retrievableFlips.flipsLength / pageSize) }
+                                        page={ page }
+                                        onChange={ changePage }
+                                        color="primary"
+                                        defaultPage={ 1 }
+                                    />
+                                </> : <p>There are no flips that can be retrieved.</p> }
+                            </div>
+                            <div hidden={ tab !== 5 }>
                                 { expiredFlips?.flips && expiredFlips.flips.length ? <>
                                     { expiredFlips.flips }
                                     <Pagination
@@ -280,7 +297,7 @@ const flips = memo(() => {
                                     />
                                 </> : <p>There are no expired flips.</p> }
                             </div>
-                            <div hidden={ tab !== 5 }>
+                            <div hidden={ tab !== 6 }>
                                 { settledFlips?.flips && settledFlips.flips.length ? <>
                                     { settledFlips.flips }
                                     <Pagination
