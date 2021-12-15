@@ -6,15 +6,14 @@ import {
     Contract,
     providers,
     Signer,
-    BigNumber,
 } from 'ethers';
 
 const determineFlippeningAddress = () => {
     if (process.env.NODE_ENV === 'production') {
-        return addresses.flippening.ava.testnet;
+        return addresses.flippening.ava.test.address;
     }
 
-    return addresses.flippening.eth.local;
+    return addresses.flippening.eth.local.address;
 };
 
 const determineDefaultTokenAddress = () => {
@@ -25,6 +24,15 @@ const determineDefaultTokenAddress = () => {
     return addresses.tokens[0].address.local;
 };
 
+const determineRequiredChainId = () => {
+    if (process.env.NODE_ENV === 'production') {
+        return addresses.flippening.ava.test.id;
+    }
+
+    return addresses.flippening.eth.local.id;
+};
+
+export let requiredChainId = determineRequiredChainId();
 export let defaultTokenAddress = determineDefaultTokenAddress();
 
 // Flippening contract
