@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { provider, ethEnabled, signer } from '../lib/w3';
+import { provider, ethEnabled, signer, requiredChainId } from '../lib/w3';
 import { utils } from 'ethers';
 // import tokenABI from '../lib/tokenABI';
 // import addresses from '../lib/addresses';
@@ -22,11 +22,25 @@ export default function OnClickConnect() {
     let { accounts, saveAccounts } = useContext(AccountsContext) || {};
 
     const onClickConnect = async (saveAccounts: any) => {
+        // Check if MetaMask is installed
         if (! (await ethEnabled())) {
             // @ts-ignore
-            // alert('Please install MetaMask to use this dApp!');
+            alert('Please install metamask to use Flippening.');
+
+            return;
         }
 
+        const network = await provider.getNetwork();
+        const { chainId } = network;
+
+        // Check if correct networkId
+        if (chainId !== requiredChainId) {
+            alert('Please select correct network');
+
+            return;
+        }
+
+        // Grab account information and apply to AccountsProvider state
         if (signer) {
             try {
                 const ethersAccounts = [await signer.getAddress()];

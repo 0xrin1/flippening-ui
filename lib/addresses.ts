@@ -20,10 +20,17 @@ export const addresses: {[key: string]: string|any} = {
         },
         arb: {
             symbol: 'AETH',
-            testnet: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
-            mainnet: '0x0000000000000000000000000000000000000000',
+            main: {
+                address: '0x0000000000000000000000000000000000000000',
+                id: 42161,
+            },
+            test: {
+                address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+                id: 421611,
+            },
         },
         bsc: {
+            id: 56,
             symbol: 'BNB',
             testnet: '0xa610A2D54cF77FFf7Eb721A49310C545992AC87c',
             mainnet: '0x0000000000000000000000000000000000000000',
@@ -34,13 +41,25 @@ export const addresses: {[key: string]: string|any} = {
         },
         ava: {
             symbol: 'AVAX',
-            testnet: '0x87142Db455cbC047cEc0a9fD9fD8400b4Ee803Ce',
-            mainnet: '0x0000000000000000000000000000000000000000',
+            main: {
+                id: 43114,
+                address: '0x0000000000000000000000000000000000000000',
+            },
+            test: {
+                id: 43113,
+                address: '0x87142Db455cbC047cEc0a9fD9fD8400b4Ee803Ce',
+            },
         },
         poly: {
             symbol: 'MATIC',
-            testnet: '0x0000000000000000000000000000000000000000',
-            mainnet: '0x0000000000000000000000000000000000000000',
+            main: {
+                id: 137,
+                address: '0x0000000000000000000000000000000000000000',
+            },
+            test: {
+                id: 80001,
+                address: '0x0000000000000000000000000000000000000000',
+            },
         },
     },
 };
