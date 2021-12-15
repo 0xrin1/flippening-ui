@@ -28,23 +28,28 @@ export default function OnClickConnect() {
         }
 
         if (signer) {
-            const ethersAccounts = [await signer.getAddress()];
-            if ([] !== ethersAccounts && typeof saveAccounts !== 'undefined') {
-                const newAccounts = await Promise.all(ethersAccounts.map(async (address: string) => {
-                    const balance = await provider.getBalance(address);
+            try {
+                const ethersAccounts = [await signer.getAddress()];
 
-                    return {
-                        address,
-                        balance: utils.formatEther(balance.toString()).toString(),
-                    };
-                }));
+                if ([] !== ethersAccounts && typeof saveAccounts !== 'undefined') {
+                    const newAccounts = await Promise.all(ethersAccounts.map(async (address: string) => {
+                        const balance = await provider.getBalance(address);
 
-                // Memoize to prevent infinite render loop on entire application
-                if (JSON.stringify(newAccounts) === JSON.stringify(accounts)) {
-                    return;
+                        return {
+                            address,
+                            balance: utils.formatEther(balance.toString()).toString(),
+                        };
+                    }));
+
+                    // Memoize to prevent infinite render loop on entire application
+                    if (JSON.stringify(newAccounts) === JSON.stringify(accounts)) {
+                        return;
+                    }
+
+                    saveAccounts(newAccounts);
                 }
-
-                saveAccounts(newAccounts);
+            } catch (e) {
+                alert('Please connect metamask to use Flippening.');
             }
         }
     };
