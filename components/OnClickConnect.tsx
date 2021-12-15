@@ -35,6 +35,7 @@ export default function OnClickConnect() {
 
         // Check if correct networkId
         if (chainId !== requiredChainId) {
+            // @ts-ignore
             alert('Please select correct network');
 
             return;
@@ -63,6 +64,7 @@ export default function OnClickConnect() {
                     saveAccounts(newAccounts);
                 }
             } catch (e) {
+                // @ts-ignore
                 alert('Please connect metamask to use Flippening.');
             }
         }
