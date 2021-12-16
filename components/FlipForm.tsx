@@ -213,7 +213,7 @@ export default function FlipForm() {
                                         }
                                     </>
 
-                                    <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance > parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                                    <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance >= parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
                                 </Form>
                             </Container>
                         </Card>
