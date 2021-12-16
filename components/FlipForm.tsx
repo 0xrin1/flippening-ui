@@ -140,7 +140,7 @@ export default function FlipForm() {
         const tokenContract = new Contract(token, tokenABI);
         const signedTokenContract = tokenContract.connect(signer);
 
-        if (allowance < parseInt(amount)) {
+        if (allowance <= parseInt(amount)) {
             if (signedContract) {
                 signedTokenContract.on('Approval', async (owner: any, spender: any) => {
                     // Could interfere with other contracts?
