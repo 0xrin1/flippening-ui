@@ -150,7 +150,7 @@ export default function FlipForm() {
             {
                 accountsContext => (
                         <Card variant="elevation">
-                            <Container className="mb-4 mt-4">
+                            <Container className="mb-4 mt-4" style={{ 'background-color': 'black' }}>
                                 <Form onSubmit={ onSubmit }>
                                     <FloatingLabel controlId="floatingSelect" label="Select network">
                                         <Form.Select onChange={ onChangeNetwork } value={ network }>
