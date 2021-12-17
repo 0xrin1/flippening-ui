@@ -18,7 +18,7 @@ const Header = ({}: Props) => {
             </Head>
             <AccountsContext.Consumer>
                 {(context: any) => (
-                    <Navbar bg="light" expand="lg" className="mb-4">
+                    <Navbar variant="dark" bg="dark" expand="lg" className="mb-4">
                         <Container>
                             <Navbar.Brand>Flippening</Navbar.Brand>
                             <Nav className="justify-content-end" style={{ width: "100%" }}>
