@@ -1,16 +1,17 @@
-import App from 'next/app';
+// import App from 'next/app';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import '../styles/global.scss';
 
+const theme = createTheme({
+    palette: {
+        mode: 'dark',
+    },
+});
+
 function MyApp({ Component, pageProps }) {
-    return <Component {...pageProps} />
-}
-
-
-MyApp.getInitialProps = async (ctx) => {
-    const initialProps = await App.getInitialProps(ctx);
-    const userAgent = typeof window === 'undefined' ? ctx?.req?.headers['user-agent'] : window.navigator.userAgent;
-
-    return { userAgent, ...initialProps };
+    return <ThemeProvider theme={ theme }>
+        <Component {...pageProps} />
+    </ThemeProvider>;
 };
 
 export default MyApp;
