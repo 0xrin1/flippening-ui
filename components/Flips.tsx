@@ -10,6 +10,7 @@ import {
 import { BigNumber } from 'ethers';
 import TabbedFlips from './TabbedFlips';
 import { FlipType } from '../interfaces';
+import { startBlock } from '../lib/w3';
 
 const flips = memo(() => {
     const flipsProvider = FlipsProvider();
@@ -20,7 +21,7 @@ const flips = memo(() => {
     const getEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Created();
-        let events = await signedContract.queryFilter(eventFilter, 0, currentBlock);
+        let events = await signedContract.queryFilter(eventFilter, startBlock, currentBlock);
 
         let newEvents: FlipType[] = [];
 
@@ -86,13 +87,13 @@ const flips = memo(() => {
     const getGuessedEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Guess();
-        return signedContract.queryFilter(eventFilter, 0, currentBlock);
+        return signedContract.queryFilter(eventFilter, startBlock, currentBlock);
     };
 
     const getSettledEvents = async () => {
         const currentBlock = await provider.getBlockNumber();
         const eventFilter = signedContract.filters.Settled();
-        return signedContract.queryFilter(eventFilter, 0, currentBlock);
+        return signedContract.queryFilter(eventFilter, startBlock, currentBlock);
     };
 
     useEffect(() => {

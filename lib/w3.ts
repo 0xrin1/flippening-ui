@@ -32,8 +32,17 @@ const determineRequiredChainId = () => {
     return addresses.flippening.eth.local.id;
 };
 
+const determineStartBlock = () => {
+    if (process.env.NODE_ENV === 'production') {
+        return addresses.flippening.ava.test.deploymentBlock;
+    }
+
+    return 0;
+};
+
 export let requiredChainId = determineRequiredChainId();
 export let defaultTokenAddress = determineDefaultTokenAddress();
+export let startBlock = determineStartBlock();
 
 // Flippening contract
 export let flippeningAddress = determineFlippeningAddress();

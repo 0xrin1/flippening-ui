@@ -21,6 +21,7 @@ const addresses: {[key: string]: string|any} = {
             local: {
                 address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
                 id: 31337,
+                deploymentBlock: 0,
             },
         },
         arb: {
@@ -32,6 +33,7 @@ const addresses: {[key: string]: string|any} = {
             test: {
                 address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
                 id: 421611,
+                deploymentBlock: 0,
             },
         },
         bsc: {
@@ -53,6 +55,7 @@ const addresses: {[key: string]: string|any} = {
             test: {
                 id: 43113,
                 address: '0x87142Db455cbC047cEc0a9fD9fD8400b4Ee803Ce',
+                deploymentBlock: 3479818,
             },
         },
         poly: {
