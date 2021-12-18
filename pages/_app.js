@@ -1,5 +1,6 @@
 // import App from 'next/app';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from "@mui/material/CssBaseline";
 import '../styles/global.scss';
 
 const theme = createTheme({
