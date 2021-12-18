@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import BSButton from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from '@mui/material/Button';
-import { Card } from '@mui/material';
-import { TravelExplore } from '@mui/icons-material';
+import FormControl from '@mui/material/FormControl';
+import Card from '@mui/material/Card';
+import Container from '@mui/material/Container';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import Input from '@mui/material/Input';
+import MenuItem from '@mui/material/MenuItem';
+import Slider from '@mui/material/Slider';
+import ButtonGroup from '@mui/material/ButtonGroup';
 import { AccountsContext } from '../context/AccountContext';
 import { utils, Contract } from 'ethers';
 import { getExplorerDomain, getActiveChains } from '../lib/addresses';
@@ -57,11 +58,11 @@ export default function FlipForm() {
     }, []);
 
     const loadAllowance = async (accountAddress: string, tokenAddress: string) => {
-        const response = await checkAllowance(accountAddress, tokenAddress);
-        setAllowance(response);
+        setAllowance(await checkAllowance(accountAddress, tokenAddress));
     };
 
     const onChangeRange = (event: any): void => {
+        console.log('onChangeRange', onChangeRange);
         setRange(parseInt(event.target.value));
     };
 
@@ -70,6 +71,8 @@ export default function FlipForm() {
     };
 
     const onChangeToken = (event: any): void => {
+        console.log('On change token', event.target.value);
+
         setToken(event.target.value);
 
         if (token && account?.address) {
@@ -164,61 +167,60 @@ export default function FlipForm() {
         console.log(`Make to store your secret so you can redeem the pot if you win: ${secret} ${secretValue}}`);
 
         await createFlip(hashedSecret, clearSecret, secretValue, token, amount);
-    }
+}
 
-    console.log(chains);
+return <div>
+    <AccountsContext.Consumer>
+        {
+            accountsContext => (
+                <Card variant="elevation">
+                    <Container className="mb-4 mt-4">
+                        <form onSubmit={ onSubmit }>
+                            <FormControl fullWidth>
+                                <InputLabel id="network-select-label">Select Network</InputLabel>
+                                <Select
+                                    labelId="networkSelect"
+                                    value={ network }
+                                    label="Select network"
+                                    onChange={ onChangeNetwork }
+                                >
+                                    <MenuItem value="ava-test">Avalanche Testnet</MenuItem>
+                                    <MenuItem value="eth" disabled>Ethereum</MenuItem>
+                                </Select>
+                            </FormControl>
 
-    return <div>
-        <AccountsContext.Consumer>
-            {
-                accountsContext => (
-                        <Card variant="elevation">
-                            <Container className="mb-4 mt-4" style={{ 'background-color': 'black' }}>
-                                <Form onSubmit={ onSubmit }>
-                                    <FloatingLabel controlId="floatingSelect" label="Select network">
-                                        <Form.Select onChange={ onChangeNetwork } value={ network }>
-                                            {/* {chains.map(chain =>
-                                                <option key={chain.key} value={chain.key}>{chain.value}</option>
-                                            )}; */}
-                                            <option value="bsc-test">Avalanche Testnet</option>
-                                            <option disabled value="eth">Ethereum</option>
-                                        </Form.Select>
-                                    </FloatingLabel>
+                            <FormControl fullWidth>
+                                <InputLabel id="address-input-label">Token address</InputLabel>
+                                <Input onChange={ onChangeToken } placeholder="Enter token address" value={ token }></Input>
+                            </FormControl>
 
-                                    <Form.Group className="mb-3" controlId="token">
-                                        <Form.Label>Token address</Form.Label>
-                                        <InputGroup className="mb-3">
-                                            <Form.Control value={ token } onChange={ onChangeToken } type="text" placeholder="Enter token" />
-                                            <Button color="secondary" title="View token info" onClick={ onClickTokenInfo }>
-                                                <TravelExplore></TravelExplore>
-                                            </Button>
-                                        </InputGroup>
-                                    </Form.Group>
+                            <ButtonGroup variant="outlined" aria-label="outlined button group">
+                                <Button onClick={ () => setRange(10) }>0.1</Button>
+                                <Button onClick={ () => setRange(50) }>0.5</Button>
+                                <Button onClick={ () => setRange(70) }>0.7</Button>
+                                <Button onClick={ () => setRange(100) }>1</Button>
+                            </ButtonGroup>
 
-                                    <ButtonGroup>
-                                        <BSButton onClick={ () => setRange(10) } variant="outline-primary">0.1</BSButton>
-                                        <BSButton onClick={ () => setRange(50) } variant="outline-primary">0.5</BSButton>
-                                        <BSButton onClick={ () => setRange(70) } variant="outline-primary">0.7</BSButton>
-                                        <BSButton onClick={ () => setRange(100) } variant="outline-primary">1</BSButton>
-                                    </ButtonGroup>
+                            <Slider
+                                onChange={ onChangeRange }
+                                value={ range }
+                                id="flip-range"
+                            />
 
-                                    <Form.Range onChange={ onChangeRange } value={ range } min="0" max="100" id="flip-range" />
+                            <p>Flip: { range / 100 }</p>
 
-                                    <p>Flip: { range / 100 }</p>
+                            <>
+                                {
+                                    accountsContext && !accountsContext.accounts &&
+                                        <p>Connect before flipping!</p>
+                                }
+                            </>
 
-                                    <>
-                                        {
-                                            accountsContext && !accountsContext.accounts &&
-                                            <p>Connect before flipping!</p>
-                                        }
-                                    </>
-
-                                    <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance >= parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
-                                </Form>
-                            </Container>
-                        </Card>
-                )
-            }
+                            <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance >= parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                        </form>
+                    </Container>
+                </Card>
+            )}
         </AccountsContext.Consumer>
     </div>;
 };

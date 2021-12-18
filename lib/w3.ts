@@ -110,8 +110,12 @@ export const approve = async (
 };
 
 export const checkAllowance = async (userAddress: string, token: string): Promise<number> => {
-    const tokenContract = new Contract(token, tokenABI);
-    const signedTokenContract = tokenContract.connect(signer);
-    const allowance = await signedTokenContract.allowance(userAddress, flippeningAddress);
-    return parseInt(allowance.toString());
+    try {
+        const tokenContract = new Contract(token, tokenABI);
+        const signedTokenContract = tokenContract.connect(signer);
+        const allowance = await signedTokenContract.allowance(userAddress, flippeningAddress);
+        return parseInt(allowance.toString());
+    } catch {
+        return 0;
+    }
 };
