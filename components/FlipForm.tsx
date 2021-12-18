@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
+import FormGroup from '@mui/material/FormGroup';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import InputLabel from '@mui/material/InputLabel';
@@ -157,7 +158,7 @@ return <div>
                 <Card variant="elevation">
                     <Container className="mb-4 mt-4">
                         <form onSubmit={ onSubmit }>
-                            <FormControl fullWidth>
+                            <FormControl fullWidth margin="normal">
                                 <InputLabel id="network-select-label">Select Network</InputLabel>
                                 <Select
                                     labelId="networkSelect"
@@ -170,23 +171,24 @@ return <div>
                                 </Select>
                             </FormControl>
 
-                            <FormControl fullWidth>
+                            <FormControl fullWidth margin="normal">
                                 <InputLabel id="address-input-label">Token address</InputLabel>
                                 <Input onChange={ onChangeToken } placeholder="Enter token address" value={ token }></Input>
                             </FormControl>
 
-                            <ButtonGroup variant="outlined" aria-label="outlined button group">
-                                <Button onClick={ () => setRange(10) }>0.1</Button>
-                                <Button onClick={ () => setRange(50) }>0.5</Button>
-                                <Button onClick={ () => setRange(70) }>0.7</Button>
-                                <Button onClick={ () => setRange(100) }>1</Button>
-                            </ButtonGroup>
-
-                            <Slider
-                                onChange={ onChangeRange }
-                                value={ range }
-                                id="flip-range"
-                            />
+                            <FormControl fullWidth margin="normal">
+                                <ButtonGroup variant="outlined" aria-label="outlined button group">
+                                    <Button onClick={ () => setRange(10) }>0.1</Button>
+                                    <Button onClick={ () => setRange(50) }>0.5</Button>
+                                    <Button onClick={ () => setRange(70) }>0.7</Button>
+                                    <Button onClick={ () => setRange(100) }>1</Button>
+                                </ButtonGroup>
+                                <Slider
+                                    onChange={ onChangeRange }
+                                    value={ range }
+                                    id="flip-range"
+                                />
+                            </FormControl>
 
                             <p>Flip: { range / 100 }</p>
 
