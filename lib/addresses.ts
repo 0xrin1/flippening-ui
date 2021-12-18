@@ -27,6 +27,7 @@ export const addresses: {[key: string]: string|any} = {
             test: {
                 address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
                 id: 421611,
+                deploymentBlock: 0,
             },
         },
         bsc: {
@@ -48,6 +49,7 @@ export const addresses: {[key: string]: string|any} = {
             test: {
                 id: 43113,
                 address: '0x87142Db455cbC047cEc0a9fD9fD8400b4Ee803Ce',
+                deploymentBlock: 3479818,
             },
         },
         poly: {
