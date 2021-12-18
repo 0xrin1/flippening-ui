@@ -1,11 +1,10 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Container from 'react-bootstrap/Container';
 import { AccountsContext } from '../context/AccountContext';
 import OnClickConnect from '../components/OnClickConnect';
 import Chip from '@mui/material/Chip';
+import AppBar from '@mui/material/AppBar';
+import Container from '@mui/material/Container';
 
 type Props = {};
 
@@ -18,10 +17,10 @@ const Header = ({}: Props) => {
             </Head>
             <AccountsContext.Consumer>
                 {(context: any) => (
-                    <Navbar expand="lg" className="mb-4">
+                    <AppBar className="mb-4" position="static">
                         <Container>
-                            <Navbar.Brand>Flippening</Navbar.Brand>
-                            <Nav className="justify-content-end" style={{ width: "100%" }}>
+                            <h1>Flippening</h1>
+                            <div className="d-flex justify-content-end">
                                 <OnClickConnect />
                                 <Chip label={
                                     context.accounts && context.accounts.map((account: any) => {
@@ -37,9 +36,9 @@ const Header = ({}: Props) => {
                                         </div>;
                                     })
                                 } />
-                            </Nav>
+                            </div>
                         </Container>
-                    </Navbar>
+                    </AppBar>
                 )}
             </AccountsContext.Consumer>
         </>
