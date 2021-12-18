@@ -1,10 +1,6 @@
-import Container from 'react-bootstrap/Container';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// import Image from 'next/image';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import Grid from '@mui/material/Grid';
 
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -26,28 +22,24 @@ const HomePage = () => {
             <Layout title="Flippening"></Layout>
             <Header></Header>
             <div className="main">
-                <Container>
-                    <Row className="mb-5">
-                        <Col md="7">
-                            <FlipForm></FlipForm>
-                        </Col>
-                        <Col md="5">
-                            <h2>The Degen Primitive</h2>
+                <Grid container spacing={ 2 }>
+                    <Grid item xs={7}>
+                        <FlipForm></FlipForm>
+                    </Grid>
+                    <Grid item xs={5}>
+                        <h2>The Degen Primitive</h2>
 
-                            <div className={ styles.heroContainer }>
-                                <div className={ styles.heroContainerContent }>
-                                    <p>In a land of undue complexity, the Flippening was brewing. The battle of <strong>true</strong> versus <strong>false</strong>...</p>
-                                    <p>Are you man enough to put your sack where your mouth is? Just <strong>Flip It</strong> and conquer your chains forever.</p>
-                                </div>
+                        <div className={ styles.heroContainer }>
+                            <div className={ styles.heroContainerContent }>
+                                <p>In a land of undue complexity, the Flippening was brewing. The battle of <strong>true</strong> versus <strong>false</strong>...</p>
+                                <p>Are you man enough to put your sack where your mouth is? Just <strong>Flip It</strong> and conquer your chains forever.</p>
                             </div>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col md="12">
-                            <Flips></Flips>
-                        </Col>
-                    </Row>
-                </Container>
+                        </div>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Flips></Flips>
+                    </Grid>
+                </Grid>
             </div>
         </AccountsContext.Provider>
     </>
