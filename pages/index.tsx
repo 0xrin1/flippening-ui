@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
 
 import Layout from '../components/Layout';
 import Header from '../components/Header';
@@ -22,6 +23,7 @@ const HomePage = () => {
             <Layout title="Flippening"></Layout>
             <Header></Header>
             <div className="main">
+                <Container>
                 <Grid container spacing={ 2 }>
                     <Grid item xs={7}>
                         <FlipForm></FlipForm>
@@ -40,6 +42,7 @@ const HomePage = () => {
                         <Flips></Flips>
                     </Grid>
                 </Grid>
+                </Container>
             </div>
         </AccountsContext.Provider>
     </>
