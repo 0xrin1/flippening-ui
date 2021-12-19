@@ -1,14 +1,51 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import Head from 'next/head';
 import { AccountsContext } from '../context/AccountContext';
+import { NetworkContext } from '../context/NetworkContext';
 import OnClickConnect from '../components/OnClickConnect';
 import Chip from '@mui/material/Chip';
 import AppBar from '@mui/material/AppBar';
 import Container from '@mui/material/Container';
+import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 
 type Props = {};
 
 const Header = ({}: Props) => {
+    let { network } = useContext(NetworkContext) || {};
+    let { accounts } = useContext(AccountsContext) || {};
+    const account = accounts?.length > 0 ? accounts[0] : {};
+
+    let networkPill: ReactJSXElement;
+
+    if (network) {
+        networkPill = <>
+            network: { network }
+        </>;
+    }
+
+    let accountPills: ReactJSXElement = <>
+        <p>Ser, Metamask is not connected</p>
+    </>;
+
+    if (accounts) {
+        accountPills = <>
+            <Chip label={
+                accounts && accounts.map((account: any) => {
+                    return <div key={ account.balance }>
+                        <div>{ account.balance }</div>
+                    </div>;
+                })
+            } />
+            <Chip label={
+                accounts && accounts.map((account: any) => {
+                    return <div key={ account.address }>
+                        <div>{ account.address }</div>
+                    </div>;
+                })
+            } />
+        </>;
+    }
+
     return (
         <>
             <Head>
@@ -23,20 +60,10 @@ const Header = ({}: Props) => {
                                 <h1>Flippening</h1>
                                 <OnClickConnect />
                                 <div className="pt-3">
-                                    <Chip label={
-                                        context.accounts && context.accounts.map((account: any) => {
-                                            return <div key={account.balance}>
-                                                <div>{account.balance}</div>
-                                            </div>;
-                                        })
-                                    } />
-                                    <Chip label={
-                                        context.accounts && context.accounts.map((account: any) => {
-                                            return <div key={account.address}>
-                                                <div>{account.address}</div>
-                                            </div>;
-                                        })
-                                    } />
+                                    <div className="d-flex">
+                                        { accountPills }
+                                        { networkPill }
+                                    </div>
                                 </div>
                             </div>
                         </Container>

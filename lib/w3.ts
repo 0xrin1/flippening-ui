@@ -112,3 +112,8 @@ export const checkAllowance = async (userAddress: string, token: string): Promis
         return 0;
     }
 };
+
+export const getNetwork = async () => {
+    const network = await provider.getNetwork();
+    return network.chainId;
+};

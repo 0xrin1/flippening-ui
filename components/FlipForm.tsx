@@ -51,7 +51,6 @@ export default function FlipForm() {
     };
 
     const onChangeRange = (event: any): void => {
-        console.log('onChangeRange', onChangeRange);
         setRange(parseInt(event.target.value));
     };
 
@@ -60,8 +59,6 @@ export default function FlipForm() {
     };
 
     const onChangeToken = (event: any): void => {
-        console.log('On change token', event.target.value);
-
         setToken(event.target.value);
 
         if (token && account?.address) {
