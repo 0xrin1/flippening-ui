@@ -1,14 +1,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
 import FormControl from '@mui/material/FormControl';
+import Paper from '@mui/material/Paper';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import Input from '@mui/material/Input';
+import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Slider from '@mui/material/Slider';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import { TravelExplore } from '@mui/icons-material';
 import { AccountsContext } from '../context/AccountContext';
 import { utils, Contract } from 'ethers';
 import { getExplorerDomain, getActiveChains } from '../lib/addresses';
@@ -124,7 +128,8 @@ export default function FlipForm() {
         }
     }
 
-    const onClickTokenInfo = async (): Promise<void> => {
+    const onClickTokenInfo = async (event: any): Promise<void> => {
+        event.preventDefault();
         const url = `https://${getExplorerDomain('bsc')}/address/${token}`;
 
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
@@ -192,9 +197,21 @@ return <div>
 
                             <FormControl fullWidth margin="normal">
                                 <InputLabel id="address-input-label">Token address</InputLabel>
-                                <Input onChange={ onChangeToken } placeholder="Enter token address" value={ token }></Input>
+                                <Paper
+                                    component="form"
+                                    sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+                                >
+                                    <InputBase
+                                        sx={{ ml: 1, flex: 1 }}
+                                        onChange={onChangeToken}
+                                        placeholder="Enter token address"
+                                        value={token}
+                                    />
+                                    <IconButton color="secondary" type="submit" sx={{ p: '10px' }} aria-label="search" title="View token info" onClick={onClickTokenInfo}>
+                                        <TravelExplore />
+                                    </IconButton>
+                                </Paper>
                             </FormControl>
-
                             <FormControl fullWidth margin="normal">
                                 <ButtonGroup variant="outlined" aria-label="outlined button group">
                                     <Button onClick={ () => setRange(10) }>0.1</Button>
