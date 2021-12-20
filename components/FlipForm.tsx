@@ -130,7 +130,7 @@ export default function FlipForm() {
 
     const onClickTokenInfo = async (event: any): Promise<void> => {
         event.preventDefault();
-        const url = `https://${getExplorerDomain('bsc')}/address/${token}`;
+        const url = `https://${getExplorerDomain(network)}/address/${token}`;
 
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
         if (newWindow) {

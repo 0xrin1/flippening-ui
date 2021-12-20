@@ -118,6 +118,6 @@ export const getActiveChains = () => {
     return active;
 }
 
-export const getExplorerDomain = (chain: string) => {
-    return addresses.flippening[chain].explorer.testnet;
+export const getExplorerDomain = (network: string) => {
+    return addresses.flippening[network].test.explorer;
 };
