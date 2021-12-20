@@ -10,8 +10,8 @@ import { Card } from '@mui/material';
 import { TravelExplore } from '@mui/icons-material';
 import { AccountsContext } from '../context/AccountContext';
 import { utils, Contract } from 'ethers';
-import { getExplorerDomain } from '../lib/addresses';
-import { signedContract, approve, signer, defaultTokenAddress, flippeningAddress } from '../lib/w3';
+import { getExplorerDomain, getActiveChains } from '../lib/addresses';
+import { signedContract, approve, signer, defaultTokenAddress, flippeningAddress, determineCurrentNetwork } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import styles from '../styles/FlipForm.module.scss';
 import tokenABI from '../lib/tokenABI';
@@ -19,14 +19,15 @@ import tokenABI from '../lib/tokenABI';
 export default function FlipForm() {
     let { accounts } = useContext(AccountsContext) || {};
 
-    let [ network, setNetwork ] = useState('bsc-test');
+    let [ network, setNetwork ] = useState('eth');
+    let [ chains, setChains ] = useState({});
     let [ range, setRange ] = useState(10);
     let [ token, setToken ] = useState(defaultTokenAddress);
     let [ loading, setLoading ] = useState(false);
 
     let [ approved, setApproved ] = useState(false);
 
-    useEffect(() => {
+    useEffect(async (): Promise<void> => {
         if (signedContract) {
             signedContract.on('Created', () => {
                 setLoading(false);
@@ -39,6 +40,12 @@ export default function FlipForm() {
                 setApproved(true);
             }
         }
+
+        let currentNetwork = await determineCurrentNetwork();
+        setNetwork(currentNetwork.chain.network);
+
+        let activeChains = getActiveChains();
+        setChains(activeChains);
     }, []);
 
     const onChangeRange = (event: any): void => {
@@ -142,6 +149,8 @@ export default function FlipForm() {
         await createFlip(hashedSecret, clearSecret, secretValue, token, utils.parseEther(adjustedRange.toString()).toString());
     }
 
+    console.log(chains);
+
     return <div>
         <AccountsContext.Consumer>
             {
@@ -151,6 +160,9 @@ export default function FlipForm() {
                                 <Form onSubmit={ onSubmit }>
                                     <FloatingLabel controlId="floatingSelect" label="Select network">
                                         <Form.Select onChange={ onChangeNetwork } value={ network }>
+                                            {/* {chains.map(chain =>
+                                                <option key={chain.key} value={chain.key}>{chain.value}</option>
+                                            )}; */}
                                             <option value="bsc-test">Avalanche Testnet</option>
                                             <option disabled value="eth">Ethereum</option>
                                         </Form.Select>

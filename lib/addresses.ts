@@ -1,4 +1,4 @@
-const addresses: {[key: string]: string|any} = {
+export const addresses: {[key: string]: string|any} = {
     null: '0x0000000000000000000000000000000000000000',
     tokens: [{
         symbol: 'ERC',
@@ -45,8 +45,38 @@ const addresses: {[key: string]: string|any} = {
     },
 };
 
+const chains: { [key: number]: string | any } = {
+    97: {
+        network: 'bsc',
+        name: 'Binance Smart Chain Testnet',
+        testnet: true
+    }
+}
+
+export const getChainFromId = (chainId: number) => {
+    let chain = chains[chainId];
+    let address = addresses.flippening[chain.network];
+
+    return {
+        chain: chain,
+        address: address
+    };
+};
+
+export const getActiveChains = () => {
+    const active = [];
+
+    for (let chain of Array.from(chains)) {
+        if (chain.testnet === true) {
+            active.push(chain);
+        }
+    }
+
+    console.log(active);
+
+    return active;
+}
+
 export const getExplorerDomain = (chain: string) => {
     return addresses.flippening[chain].explorer.testnet;
 };
-
-export default addresses;
