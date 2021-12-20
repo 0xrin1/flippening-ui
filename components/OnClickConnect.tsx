@@ -3,6 +3,7 @@ import { provider, ethEnabled, signer, requiredChainId } from '../lib/w3';
 import { utils } from 'ethers';
 import { AccountsContext } from '../context/AccountContext';
 import { NetworkContext } from '../context/NetworkContext';
+import networks from '../lib/networks';
 // import tokenABI from '../lib/tokenABI';
 // import addresses from '../lib/addresses';
 
@@ -33,7 +34,7 @@ export default function OnClickConnect() {
         }
 
         const network = await provider.getNetwork();
-        await saveNetwork(network?.chainId);
+        await saveNetwork(networks[network?.chainId]);
 
         // Check if correct networkId
         if (network?.chainId !== requiredChainId) {

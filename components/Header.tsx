@@ -7,20 +7,18 @@ import Chip from '@mui/material/Chip';
 import AppBar from '@mui/material/AppBar';
 import Container from '@mui/material/Container';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
+import addresses from '../lib/addresses';
 
 type Props = {};
 
 const Header = ({}: Props) => {
     let { network } = useContext(NetworkContext) || {};
     let { accounts } = useContext(AccountsContext) || {};
-    const account = accounts?.length > 0 ? accounts[0] : {};
 
     let networkPill: ReactJSXElement;
 
     if (network) {
-        networkPill = <>
-            network: { network }
-        </>;
+        networkPill = <Chip label={ network } />;
     }
 
     let accountPills: ReactJSXElement = <>

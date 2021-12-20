@@ -37,13 +37,14 @@ const addresses: {[key: string]: string|any} = {
             },
         },
         bsc: {
-            id: 56,
             symbol: 'BNB',
             main: {
                 address: '0x0000000000000000000000000000000000000000',
+                id: 56,
             },
             test: {
                 address: '0xa610A2D54cF77FFf7Eb721A49310C545992AC87c',
+                id: 97,
             },
         },
         ava: {
