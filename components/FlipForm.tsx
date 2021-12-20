@@ -38,7 +38,7 @@ export default function FlipForm() {
 
     let [ approved, setApproved ] = useState(false);
 
-    useEffect(async (): Promise<void> => {
+    useEffect(() => {
         if (signedContract) {
             signedContract.on('Created', () => {
                 setLoading(false);
@@ -50,8 +50,8 @@ export default function FlipForm() {
             loadAllowance(account.address, token);
         }
 
-        let currentNetwork = await determineCurrentNetwork();
-        setNetwork(currentNetwork.chain.network);
+        // let currentNetwork = await determineCurrentNetwork();
+        // setNetwork(currentNetwork.chain.network);
 
         let activeChains = getActiveChains();
         setChains(activeChains);
@@ -132,6 +132,7 @@ export default function FlipForm() {
             newWindow.opener = null;
         }
     }
+
     const adjustedRange = range / 100;
     const amount = utils.parseEther(adjustedRange.toString()).toString();
 

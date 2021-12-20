@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import { provider, ethEnabled, signer, requiredChainId } from '../lib/w3';
 import { utils } from 'ethers';
+import { AccountsContext } from '../context/AccountContext';
+import { NetworkContext } from '../context/NetworkContext';
+import networks from '../lib/networks';
 // import tokenABI from '../lib/tokenABI';
 // import addresses from '../lib/addresses';
-import { AccountsContext } from '../context/AccountContext';
 
 // const balances = async (address: string) => {
 //     return await Promise.all(Object.keys(addresses.tokens).map(async (symbol: string) => {
@@ -20,6 +22,7 @@ import { AccountsContext } from '../context/AccountContext';
 
 export default function OnClickConnect() {
     let { accounts, saveAccounts } = useContext(AccountsContext) || {};
+    let { saveNetwork } = useContext(NetworkContext) || {};
 
     const onClickConnect = async (saveAccounts: any) => {
         // Check if MetaMask is installed
@@ -31,10 +34,11 @@ export default function OnClickConnect() {
         }
 
         const network = await provider.getNetwork();
-        const { chainId } = network;
+        const networkName = networks[network?.chainId];
+        saveNetwork(networkName);
 
         // Check if correct networkId
-        if (chainId !== requiredChainId) {
+        if (network?.chainId !== requiredChainId) {
             // @ts-ignore
             alert('Please select correct network');
 

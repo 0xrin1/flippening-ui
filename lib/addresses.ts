@@ -10,13 +10,21 @@ export const addresses: {[key: string]: string|any} = {
     flippening: {
         eth: {
             symbol: 'ETH',
-            testnet: '0x0000000000000000000000000000000000000000',
-            mainnet: '0x0000000000000000000000000000000000000000',
-            local: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
-            explorer: {
-                testnet: 'ropsten.etherscan.io',
-                mainnet: 'etherscan.io'
-            }
+            main: {
+                address: '0x0000000000000000000000000000000000000000',
+                id: 1,
+                explorer: 'etherscan.io',
+            },
+            test: {
+                address: '0x0000000000000000000000000000000000000000',
+                id: 3,
+                explorer: 'ropsten.ethersan.io',
+            },
+            local: {
+                address: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+                id: 31337,
+                deploymentBlock: 0,
+            },
         },
         arb: {
             symbol: 'AETH',
@@ -33,12 +41,16 @@ export const addresses: {[key: string]: string|any} = {
         bsc: {
             id: 56,
             symbol: 'BNB',
-            testnet: '0xa610A2D54cF77FFf7Eb721A49310C545992AC87c',
-            mainnet: '0x0000000000000000000000000000000000000000',
-            explorer: {
-                testnet: 'testnet.bscscan.com',
-                mainnet: 'bscscan.com'
-            }
+            main: {
+                address: '0x0000000000000000000000000000000000000000',
+                id: 56,
+                explorer: 'bscscan.com',
+            },
+            test: {
+                address: '0xa610A2D54cF77FFf7Eb721A49310C545992AC87c',
+                id: 97,
+                explorer: 'testnet.bscscan.com',
+            },
         },
         ava: {
             symbol: 'AVAX',
@@ -66,7 +78,13 @@ export const addresses: {[key: string]: string|any} = {
     },
 };
 
-const chains: { [key: number]: string | any } = {
+type chain = {
+    network: string,
+    name: string,
+    testnet?: boolean,
+};
+
+const chains: { [key: number]: chain } = {
     97: {
         network: 'bsc',
         name: 'Binance Smart Chain Testnet',
@@ -85,13 +103,15 @@ export const getChainFromId = (chainId: number) => {
 };
 
 export const getActiveChains = () => {
-    const active = [];
+    const active: chain[] = [];
 
-    for (let chain of Array.from(chains)) {
+    const chainKeys: string[] = Object.keys(chains);
+    chainKeys.forEach((chainKey: string) => {
+        const chain = chains[parseInt(chainKey)];
         if (chain.testnet === true) {
             active.push(chain);
         }
-    }
+    });
 
     console.log(active);
 
