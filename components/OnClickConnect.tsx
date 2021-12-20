@@ -33,10 +33,10 @@ export default function OnClickConnect() {
         }
 
         const network = await provider.getNetwork();
-        await saveNetwork(network.chainId);
+        await saveNetwork(network?.chainId);
 
         // Check if correct networkId
-        if (network !== requiredChainId) {
+        if (network?.chainId !== requiredChainId) {
             // @ts-ignore
             alert('Please select correct network');
 

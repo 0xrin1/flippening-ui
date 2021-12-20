@@ -79,8 +79,6 @@ export const ethEnabled = async () => {
         } catch (e) {
             console.log('User denied access', e);
         }
-
-        return false;
     }
 
     return false;
@@ -108,9 +106,9 @@ export const checkAllowance = async (userAddress: string, token: string): Promis
         const signedTokenContract = tokenContract.connect(signer);
         const allowance = await signedTokenContract.allowance(userAddress, flippeningAddress);
         return parseInt(allowance.toString());
-    } catch {
-        return 0;
-    }
+    } catch {}
+
+    return 0;
 };
 
 export const getNetwork = async () => {
