@@ -9,6 +9,7 @@ export const addresses: {[key: string]: string|any} = {
     }],
     flippening: {
         eth: {
+            name: 'Ethereum',
             symbol: 'ETH',
             main: {
                 address: '0x0000000000000000000000000000000000000000',
@@ -27,6 +28,7 @@ export const addresses: {[key: string]: string|any} = {
             },
         },
         arb: {
+            name: 'Arbitrum',
             symbol: 'AETH',
             main: {
                 address: '0x0000000000000000000000000000000000000000',
@@ -39,7 +41,7 @@ export const addresses: {[key: string]: string|any} = {
             },
         },
         bsc: {
-            id: 56,
+            name: 'Binance Smart Chain',
             symbol: 'BNB',
             main: {
                 address: '0x0000000000000000000000000000000000000000',
@@ -53,6 +55,7 @@ export const addresses: {[key: string]: string|any} = {
             },
         },
         ava: {
+            name: 'Avalanche',
             symbol: 'AVAX',
             main: {
                 id: 43114,
@@ -84,14 +87,6 @@ type chain = {
     testnet?: boolean,
 };
 
-const chains: { [key: number]: chain } = {
-    97: {
-        network: 'bsc',
-        name: 'Binance Smart Chain Testnet',
-        testnet: true
-    }
-}
-
 export const getChainFromId = (chainId: number) => {
     let chain = chains[chainId];
     let address = addresses.flippening[chain.network];
@@ -103,17 +98,16 @@ export const getChainFromId = (chainId: number) => {
 };
 
 export const getActiveChains = () => {
-    const active: chain[] = [];
+    const active = [];
 
-    const chainKeys: string[] = Object.keys(chains);
+    const chainKeys: string[] = Object.keys(addresses.flippening);
     chainKeys.forEach((chainKey: string) => {
-        const chain = chains[parseInt(chainKey)];
-        if (chain.testnet === true) {
-            active.push(chain);
+        const chain = addresses.flippening[chainKey];
+        console.log(chain, chainKey);
+        if (chain.test.address !== addresses.null) {
+            active[chainKey] = chain.name;
         }
     });
-
-    console.log(active);
 
     return active;
 }
