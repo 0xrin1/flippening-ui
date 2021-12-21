@@ -7,7 +7,6 @@ import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
-import Input from '@mui/material/Input';
 import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Slider from '@mui/material/Slider';
@@ -23,7 +22,6 @@ import {
     defaultTokenAddress,
     flippeningAddress,
     checkAllowance,
-    determineCurrentNetwork,
 } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import styles from '../styles/FlipForm.module.scss';
@@ -34,12 +32,13 @@ export default function FlipForm() {
     const account = accounts?.length > 0 ? accounts[0] : {};
 
     let [ network, setNetwork ] = useState('eth');
+    // @ts-ignore
     let [ chains, setChains ] = useState({});
     let [ range, setRange ] = useState(10);
     let [ token, setToken ] = useState(defaultTokenAddress);
     let [ loading, setLoading ] = useState(false);
     let [ allowance, setAllowance ] = useState(0);
-
+    // @ts-ignore
     let [ approved, setApproved ] = useState(false);
 
     useEffect(() => {

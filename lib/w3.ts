@@ -1,4 +1,4 @@
-import { addresses, getChainFromId } from './addresses';
+import { addresses } from './addresses';
 import tokenABI from './tokenABI';
 import flippeningABI from './flippeningABI';
 import {
@@ -82,13 +82,6 @@ export const ethEnabled = async () => {
     }
 
     return false;
-};
-
-export const determineCurrentNetwork = async () => {
-    const { chainId } = await provider.getNetwork()
-    const chain = getChainFromId(chainId);
-
-    return chain;
 };
 
 // Allow the flippening contract to execute provided erch20Contract token contract functions on behalf of this wallet.

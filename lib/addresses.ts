@@ -81,29 +81,12 @@ export const addresses: {[key: string]: string|any} = {
     },
 };
 
-type chain = {
-    network: string,
-    name: string,
-    testnet?: boolean,
-};
-
-export const getChainFromId = (chainId: number) => {
-    let chain = chains[chainId];
-    let address = addresses.flippening[chain.network];
-
-    return {
-        chain: chain,
-        address: address
-    };
-};
-
 export const getActiveChains = () => {
-    const active = [];
+    const active: any = [];
 
     const chainKeys: string[] = Object.keys(addresses.flippening);
     chainKeys.forEach((chainKey: string) => {
         const chain = addresses.flippening[chainKey];
-        console.log(chain, chainKey);
         if (chain.test.address !== addresses.null) {
             active[chainKey] = chain.name;
         }
