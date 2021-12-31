@@ -27,7 +27,7 @@ export default function OnClickConnect() {
     const onClickConnect = async (saveAccounts: any) => {
         // Check if MetaMask is installed
         if (! (await ethEnabled())) {
-            // @ts-ignore
+            // @tsx-ignore
             alert('Please install metamask to use Flippening.');
 
             return;
