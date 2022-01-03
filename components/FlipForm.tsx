@@ -189,8 +189,9 @@ return <div>
                                     label="Select network"
                                     onChange={ onChangeNetwork }
                                 >
-                                    <MenuItem value="ava-test">Avalanche Testnet</MenuItem>
-                                    <MenuItem value="eth" disabled>Ethereum</MenuItem>
+                                    { ['eth', 'bsc'].map((network) => {
+                                        <MenuItem value={network}>{network}</MenuItem>
+                                    }) }
                                 </Select>
                             </FormControl>
 

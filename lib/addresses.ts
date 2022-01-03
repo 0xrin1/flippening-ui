@@ -81,8 +81,12 @@ export const addresses: {[key: string]: string|any} = {
     },
 };
 
+type chainObject = {
+    [key: string]: string
+}
+
 export const getActiveChains = () => {
-    const active: any = [];
+    const active: chainObject = {};
 
     const chainKeys: string[] = Object.keys(addresses.flippening);
     chainKeys.forEach((chainKey: string) => {
