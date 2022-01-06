@@ -57,6 +57,7 @@ export default function FlipForm() {
         // setNetwork(currentNetwork.chain.network);
 
         let activeChains = getActiveChains();
+        // let setChains = Object.keys(activeChains).map((key) => [String(key), activeChains[key]]);
         setChains(activeChains);
     }, []);
 
@@ -189,9 +190,12 @@ return <div>
                                     label="Select network"
                                     onChange={ onChangeNetwork }
                                 >
-                                    { ['eth', 'bsc'].map((network) => {
-                                        <MenuItem value={network}>{network}</MenuItem>
-                                    }) }
+                                    {chains != {} && Object.keys(chains).map((network, index) => {
+                                        let name = chains[network];
+                                        return (
+                                            <MenuItem key={index} value={network}>{name}</MenuItem>
+                                        )
+                                    })}
                                 </Select>
                             </FormControl>
 

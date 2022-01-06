@@ -17,7 +17,7 @@ export const addresses: {[key: string]: string|any} = {
                 explorer: 'etherscan.io',
             },
             test: {
-                address: '0x0000000000000000000000000000000000000000',
+                address: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
                 id: 3,
                 explorer: 'ropsten.ethersan.io',
             },
@@ -85,8 +85,8 @@ type chainObject = {
     [key: string]: string
 }
 
-export const getActiveChains = () => {
-    const active: chainObject = {};
+export const getActiveChains = (): chainObject => {
+    const active: chainObject = {}
 
     const chainKeys: string[] = Object.keys(addresses.flippening);
     chainKeys.forEach((chainKey: string) => {
