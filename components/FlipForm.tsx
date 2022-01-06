@@ -57,7 +57,6 @@ export default function FlipForm() {
         // setNetwork(currentNetwork.chain.network);
 
         let activeChains = getActiveChains();
-        // let setChains = Object.keys(activeChains).map((key) => [String(key), activeChains[key]]);
         setChains(activeChains);
     }, []);
 
