@@ -189,11 +189,9 @@ return <div>
                                     label="Select network"
                                     onChange={ onChangeNetwork }
                                 >
-                                    {chains != {} && Object.keys(chains).map((network, index) => {
+                                    {Object.keys(chains).length > 0 && Object.keys(chains).map((network, index) => {
                                         let name = chains[network];
-                                        return (
-                                            <MenuItem key={index} value={network}>{name}</MenuItem>
-                                        )
+                                        return <MenuItem key={index} value={network}>{name}</MenuItem>
                                     })}
                                 </Select>
                             </FormControl>
