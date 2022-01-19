@@ -11,10 +11,13 @@ import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Slider from '@mui/material/Slider';
 import ButtonGroup from '@mui/material/ButtonGroup';
+import TextField from '@mui/material/TextField';
+import Stack from '@mui/material/Stack';
+import Autocomplete from '@mui/material/Autocomplete';
 import { TravelExplore } from '@mui/icons-material';
 import { AccountsContext } from '../context/AccountContext';
 import { utils, Contract } from 'ethers';
-import { getExplorerDomain, getActiveChains } from '../lib/addresses';
+import { getExplorerDomain, getActiveChains, getTokens } from '../lib/addresses';
 import {
     signedContract,
     approve,
@@ -31,9 +34,10 @@ export default function FlipForm() {
     let { accounts } = useContext(AccountsContext) || {};
     const account = accounts?.length > 0 ? accounts[0] : {};
 
-    let [ network, setNetwork ] = useState('eth');
+    let [ network, setNetwork ] = useState('arb');
     // @ts-ignore
     let [ chains, setChains ] = useState({});
+    let [ tokens, setTokens ] = useState({});
     let [ range, setRange ] = useState(10);
     let [ token, setToken ] = useState(defaultTokenAddress);
     let [ loading, setLoading ] = useState(false);
@@ -58,6 +62,10 @@ export default function FlipForm() {
 
         let activeChains = getActiveChains();
         setChains(activeChains);
+
+        let activeTokens = getTokens('arb');
+        console.log(activeTokens);
+        setTokens(activeTokens);
     }, []);
 
     const loadAllowance = async (accountAddress: string, tokenAddress: string) => {
@@ -196,18 +204,42 @@ return <div>
                                 </Select>
                             </FormControl>
 
+                            {Object.keys(chains).length > 0 &&
+                            <Autocomplete
+                                id="token-list"
+                                freeSolo
+                                onChange={(event: any, newValue: string | null) => {
+                                    setToken(tokens[newValue]);
+                                }}
+                                options={Object.keys(tokens).map((option) => option)}
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Token list"
+                                        InputProps={{
+                                            ...params.InputProps,
+                                            type: 'search',
+                                        }}
+                                    />
+                                )}
+                            />
+
+                            }
+
                             <FormControl fullWidth margin="normal">
                                 <InputLabel id="address-input-label">Token address</InputLabel>
                                 <Paper
                                     component="form"
                                     sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
                                 >
+                                    { token != '' &&
                                     <InputBase
                                         sx={{ ml: 1, flex: 1 }}
                                         onChange={onChangeToken}
                                         placeholder="Enter token address"
                                         value={token}
                                     />
+                                    }
                                     <IconButton color="secondary" type="submit" sx={{ p: '10px' }} aria-label="search" title="View token info" onClick={onClickTokenInfo}>
                                         <TravelExplore />
                                     </IconButton>

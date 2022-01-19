@@ -5,6 +5,8 @@ export const addresses: {[key: string]: string|any} = {
         address: {
             local: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
             testnet: '0xb4B49427d8599d6030e41cDc2ccDb7d28A9A756B',
+            arb_test: '0x0000000-arb_test',
+            arb_main: '0x0000000-arb_main',
         },
     }],
     flippening: {
@@ -37,6 +39,7 @@ export const addresses: {[key: string]: string|any} = {
             test: {
                 address: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
                 id: 421611,
+                explorer: 'testnet.arbiscan.io',
                 deploymentBlock: 0,
             },
         },
@@ -93,6 +96,25 @@ export const getActiveChains = (): chainObject => {
         const chain = addresses.flippening[chainKey];
         if (chain.test.address !== addresses.null) {
             active[chainKey] = chain.name;
+        }
+    });
+
+    return active;
+}
+
+type tokenObject = {
+    [key: string]: string
+}
+
+export const getTokens = (network: string): tokenObject => {
+    let active: chainObject = {}
+
+    const tokenKeys: string[] = Object.keys(addresses.tokens);
+    tokenKeys.forEach((tokenKey: string) => {
+        const token = addresses.tokens[tokenKey];
+        const name = `${network}_test`;
+        if (token.address.hasOwnProperty(name)) {
+            active[token.symbol] = token.address[name];
         }
     });
 
