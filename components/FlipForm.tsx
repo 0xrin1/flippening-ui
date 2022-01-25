@@ -189,6 +189,7 @@ return <div>
                 <Card variant="elevation">
                     <Container className="mb-4 mt-4">
                         <form onSubmit={ onSubmit }>
+                            {/*
                             <FormControl fullWidth margin="normal">
                                 <InputLabel id="network-select-label">Select Network</InputLabel>
                                 <Select
@@ -203,6 +204,7 @@ return <div>
                                     })}
                                 </Select>
                             </FormControl>
+                            */}
 
                             {Object.keys(chains).length > 0 &&
                             <Autocomplete
