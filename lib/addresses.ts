@@ -3,7 +3,7 @@ export const addresses: {[key: string]: string|any} = {
     tokens: [{
         symbol: 'ERC',
         address: {
-            local: '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512',
+            local: '0xAf4B08b4A2A983535B2d59f7B1cB477953505D11',
             testnet: '0xb4B49427d8599d6030e41cDc2ccDb7d28A9A756B',
             arb_test: '0x0000000-arb_test',
             arb_main: '0x0000000-arb_main',
@@ -24,7 +24,7 @@ export const addresses: {[key: string]: string|any} = {
                 explorer: 'ropsten.ethersan.io',
             },
             local: {
-                address: '0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9',
+                address: '0xcaAb92e55b3e7CB594cf7B6017a34848024AA5D7',
                 id: 31337,
                 deploymentBlock: 0,
             },

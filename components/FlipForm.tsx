@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Slider from '@mui/material/Slider';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
+import Box from '@mui/material/Box';
 import Autocomplete from '@mui/material/Autocomplete';
 import { TravelExplore } from '@mui/icons-material';
 import { AccountsContext } from '../context/AccountContext';
@@ -34,7 +34,7 @@ export default function FlipForm() {
     let { accounts } = useContext(AccountsContext) || {};
     const account = accounts?.length > 0 ? accounts[0] : {};
 
-    let [ network, setNetwork ] = useState('arb');
+    let [ network, setNetwork ] = useState('eth');
     // @ts-ignore
     let [ chains, setChains ] = useState({});
     let [ tokens, setTokens ] = useState({});
@@ -63,8 +63,7 @@ export default function FlipForm() {
         let activeChains = getActiveChains();
         setChains(activeChains);
 
-        let activeTokens = getTokens('arb');
-        console.log(activeTokens);
+        let activeTokens = getTokens(network);
         setTokens(activeTokens);
     }, []);
 
@@ -188,7 +187,14 @@ return <div>
             accountsContext => (
                 <Card variant="elevation">
                     <Container className="mb-4 mt-4">
-                        <form onSubmit={ onSubmit }>
+                        <Box component="form"
+                            sx={{
+                                '& .MuiTextField-root': { m: 1, width: '25ch' },
+                            }}
+                            noValidate
+                            autoComplete="off"
+                            onSubmit={ onSubmit }
+                            >
                             {/*
                             <FormControl fullWidth margin="normal">
                                 <InputLabel id="network-select-label">Select Network</InputLabel>
@@ -225,7 +231,6 @@ return <div>
                                     />
                                 )}
                             />
-
                             }
 
                             <FormControl fullWidth margin="normal">
@@ -271,7 +276,7 @@ return <div>
                             </>
 
                             <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance >= parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
-                        </form>
+                        </Box>
                     </Container>
                 </Card>
             )}
