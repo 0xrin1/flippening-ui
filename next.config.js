@@ -1,3 +1,5 @@
 module.exports = {
-    /* config options here */
+    env: {
+        NETWORK_ETH_LOCAL: process.env.NETWORK_ETH_LOCAL
+    }
 }

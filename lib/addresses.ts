@@ -24,7 +24,7 @@ export const addresses: {[key: string]: string|any} = {
                 explorer: 'ropsten.ethersan.io',
             },
             local: {
-                address: '0xcaAb92e55b3e7CB594cf7B6017a34848024AA5D7',
+                address: process.env.NETWORK_ETH_LOCAL,
                 id: 31337,
                 deploymentBlock: 0,
             },
