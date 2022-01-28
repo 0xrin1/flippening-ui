@@ -25,6 +25,7 @@ import {
     defaultTokenAddress,
     flippeningAddress,
     checkAllowance,
+    isAddress,
 } from '../lib/w3';
 import { getRandomString, sha256 } from '../lib/crypto';
 import styles from '../styles/FlipForm.module.scss';
@@ -75,6 +76,10 @@ export default function FlipForm() {
         console.log('onChangeRange', onChangeRange);
         setRange(parseInt(event.target.value));
     };
+
+    const isValidToken = (): boolean => {
+        return isAddress(token);
+    }
 
     const onChangeNetwork = (event: any): void => {
         setNetwork(event.target.value);
@@ -265,17 +270,19 @@ return <div>
                                     id="flip-range"
                                 />
                             </FormControl>
-
-                            <p>Flip: { range / 100 }</p>
-
                             <>
-                                {
-                                    accountsContext && !accountsContext.accounts &&
-                                        <p>Connect before flipping!</p>
+                                {isValidToken() &&
+                                    <>
+                                    <p>Flip: { range / 100 }</p>
+                                    <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance >= parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                                    </>
                                 }
                             </>
-
-                            <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance >= parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                            <>
+                            {accountsContext && !accountsContext.accounts &&
+                                <p>Connect before flipping!</p>
+                            }
+                            </>
                         </Box>
                     </Container>
                 </Card>

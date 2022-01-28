@@ -84,6 +84,10 @@ export const ethEnabled = async () => {
     return false;
 };
 
+export const isAddress = (token: string) => {
+    return ethers.utils.isAddress(token);
+};
+
 // Allow the flippening contract to execute provided erch20Contract token contract functions on behalf of this wallet.
 export const approve = async (
     wei: string,
