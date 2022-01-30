@@ -73,7 +73,6 @@ export default function FlipForm() {
     };
 
     const onChangeRange = (event: any): void => {
-        console.log('onChangeRange', onChangeRange);
         setRange(parseInt(event.target.value));
     };
 
@@ -85,14 +84,22 @@ export default function FlipForm() {
         setNetwork(event.target.value);
     };
 
-    const onChangeToken = (event: any): void => {
-        console.log('On change token', event.target.value);
+    const doChangeToken = (token: string): void => {
+        console.log('On change token', account.address);
 
-        setToken(event.target.value);
+        // Reset allowance for this token
+        setAllowance(0);
+
+        setToken(token);
 
         if (token && account?.address) {
-            loadAllowance(account.address, event.target.value);
+            console.log('Token change check!');
+            loadAllowance(account.address, token);
         }
+    };
+
+    const onChangeToken = (event: any): void => {
+        doChangeToken(event.target.value);
     };
 
     const parseSecrets = (secretObject: any, secrets?: any) => {
@@ -151,6 +158,7 @@ export default function FlipForm() {
 
     const adjustedRange = range / 100;
     const amount = utils.parseEther(adjustedRange.toString()).toString();
+    const requestTokenLimit = utils.parseEther('10').toString();
 
     const onSubmit = async (event: any): Promise<void> => {
         event.preventDefault();
@@ -171,7 +179,7 @@ export default function FlipForm() {
                 });
             }
 
-            await approve(utils.parseEther(adjustedRange.toString()).toString(), tokenContract);
+            await approve(requestTokenLimit, tokenContract);
 
             return;
         }
@@ -222,7 +230,9 @@ return <div>
                                 id="token-list"
                                 freeSolo
                                 onChange={(event: any, newValue: string | null) => {
-                                    setToken(tokens[newValue]);
+                                    if (newValue) {
+                                        doChangeToken(tokens[newValue]);
+                                    }
                                 }}
                                 options={Object.keys(tokens).map((option) => option)}
                                 renderInput={(params) => (
@@ -241,10 +251,9 @@ return <div>
                             <FormControl fullWidth margin="normal">
                                 <InputLabel id="address-input-label">Token address</InputLabel>
                                 <Paper
-                                    component="form"
                                     sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
                                 >
-                                    { token != '' &&
+                                    { token && token != '' &&
                                     <InputBase
                                         sx={{ ml: 1, flex: 1 }}
                                         onChange={onChangeToken}
@@ -273,8 +282,9 @@ return <div>
                             <>
                                 {isValidToken() &&
                                     <>
-                                    <p>Flip: { range / 100 }</p>
-                                    <Button className={ styles.submitButton } variant="contained" color="warning" type="submit" disabled={ loading }>{ allowance >= parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
+                                    <p>Allowance: {allowance} Ammout: {parseInt(amount)}</p>
+                                    <p>Balance: 0 Flip: { range / 100 }</p>
+                                    <Button className={styles.submitButton} variant="contained" color="warning" type="submit" disabled={range == 0 || loading}>{range > 0 && allowance >= parseInt(amount) ? 'FLIP IT!' : 'Allow...' }</Button>{' '}
                                     </>
                                 }
                             </>

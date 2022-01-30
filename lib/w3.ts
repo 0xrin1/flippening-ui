@@ -105,12 +105,20 @@ export const approve = async (
 };
 
 export const checkAllowance = async (userAddress: string, token: string): Promise<number> => {
+
+    // Something is causing this to be undefined when flipping
+    // so prevent making the call and ethers erroring
+    if (typeof token === 'undefined') {
+        return 0;
+    }
     try {
         const tokenContract = new Contract(token, tokenABI);
         const signedTokenContract = tokenContract.connect(signer);
         const allowance = await signedTokenContract.allowance(userAddress, flippeningAddress);
         return parseInt(allowance.toString());
-    } catch {}
+    } catch (error) {
+        console.log(error);
+    }
 
     return 0;
 };
